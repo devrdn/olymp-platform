@@ -37,8 +37,11 @@ class Task
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $restriction = null;
 
-    #[ORM\OneToMany(mappedBy: 'task_id', targetEntity: TaskTest::class, orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'task', targetEntity: TaskTest::class, orphanRemoval: true)]
     private Collection $taskTests;
+
+    #[ORM\OneToOne(mappedBy: 'task', cascade: ['persist', 'remove'])]
+    private ?TaskMeta $taskMeta = null;
 
     public function __construct()
     {
@@ -146,7 +149,7 @@ class Task
     {
         if (!$this->taskTests->contains($taskTest)) {
             $this->taskTests->add($taskTest);
-            $taskTest->setTaskId($this);
+            $taskTest->setTask($this);
         }
 
         return $this;
@@ -156,10 +159,27 @@ class Task
     {
         if ($this->taskTests->removeElement($taskTest)) {
             // set the owning side to null (unless already changed)
-            if ($taskTest->getTaskId() === $this) {
-                $taskTest->setTaskId(null);
+            if ($taskTest->getTask() === $this) {
+                $taskTest->setTask(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getTaskMeta(): ?TaskMeta
+    {
+        return $this->taskMeta;
+    }
+
+    public function setTaskMeta(TaskMeta $taskMeta): self
+    {
+        // set the owning side of the relation if necessary
+        if ($taskMeta->getTask() !== $this) {
+            $taskMeta->setTask($this);
+        }
+
+        $this->taskMeta = $taskMeta;
 
         return $this;
     }

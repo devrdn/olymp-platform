@@ -15,7 +15,7 @@ class TaskTest
 
     #[ORM\ManyToOne(inversedBy: 'taskTests')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?task $task_id = null;
+    private ?task $task = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $input_data = null;
@@ -28,14 +28,14 @@ class TaskTest
         return $this->id;
     }
 
-    public function getTaskId(): ?task
+    public function getTask(): ?task
     {
-        return $this->task_id;
+        return $this->task;
     }
 
-    public function setTaskId(?task $task_id): self
+    public function setTask(?task $task): self
     {
-        $this->task_id = $task_id;
+        $this->task = $task;
 
         return $this;
     }
