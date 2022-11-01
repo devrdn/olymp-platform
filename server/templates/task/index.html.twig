@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Task
+{% block title %}
+	{{ task.name }}
 {% endblock %}
 
 {% block body %}
@@ -38,7 +39,7 @@
 			<div class="task__field task__example">
 				<h3>Example Input and Output</h3><hr>
 				<h7>Example Input:
-					{{ task.taskMeta.author }}, Example Output:
+					{{ task.exampleInput }}, Example Output:
 					{{ task.exampleOutput }}</h7>
 			</div>
 
@@ -47,7 +48,7 @@
 				<h7>{{ task.taskMeta.author }}</h7>
 			</div>
 
-            <div class="task__field task__example">
+			<div class="task__field task__example">
 				<h3>Created</h3><hr>
 				<h7>{{ task.taskMeta.createdAt | date("Y-m-d H:i:s") }}</h7>
 			</div>
@@ -60,9 +61,6 @@
 					| Output:
 					{{ task.outputData }}<br>
 				{% endfor %}
-			</div>
-
+			</div</div>
 		</div>
-
-	</div>
 {% endblock %}

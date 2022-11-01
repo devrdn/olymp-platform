@@ -40,7 +40,7 @@ class Task
     #[ORM\OneToMany(mappedBy: 'task', targetEntity: TaskTest::class, orphanRemoval: true)]
     private Collection $taskTests;
 
-    #[ORM\OneToOne(mappedBy: 'task', cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(mappedBy: 'task', cascade: ['persist', 'remove'], orphanRemoval: true)]
     private ?TaskMeta $taskMeta = null;
 
     public function __construct()

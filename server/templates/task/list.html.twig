@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+	Tasks
+{% endblock %}
+
+{% block body %}
+	<style>
+		.wrapper {
+			margin: 1em auto;
+			max-width: 800px;
+			width: 95%;
+			font: 18px / 1.5 sans-serif;
+		}
+		.wrapper code {
+			background: #F5F5F5;
+			padding: 2px 6px;
+		}
+	</style>
+	<div class="wrapper">
+		<div class="task-list">
+			<div class="task-list__title">
+				<h1>All tasks</h1>
+			</div>
+			<div class="task-list__tasks">
+				<ul>
+					{% for task in tasks %}
+						<li>
+							<a href="/task/view/{{ task.id }}">{{ task.name }}</a>
+						</li>
+					{% else %}
+						<div>Задания найдены не были</div>
+					{% endfor %}
+				</ul>
+			</div>
+		</div>
+	</div>
+{% endblock %}
