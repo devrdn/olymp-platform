@@ -12,7 +12,7 @@ class TaskController extends AbstractController
     private const OFFSET  = 20;
 
     #[Route('/tasks', methods: ['GET'], name: 'app_task_list')]
-    public function getAllTasks(TaskRepository $taskRepository): Response
+    public function showAllTasks(TaskRepository $taskRepository): Response
     {
         $tasks = $taskRepository->findAll();
 
@@ -20,7 +20,7 @@ class TaskController extends AbstractController
     }
 
     #[Route('/task/view/{id}', methods: ['GET'], name: 'app_task_single_page')]
-    public function getTask(int $id,  TaskRepository $taskRepository): Response
+    public function showTask(int $id,  TaskRepository $taskRepository): Response
     {
         $task = $taskRepository->find($id);
 
