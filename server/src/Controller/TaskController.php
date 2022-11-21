@@ -13,7 +13,7 @@ class TaskController extends AbstractController
     private const OFFSET  = 20;
 
     #[Route('/task/{page}', methods: ['GET'], name: 'app_task_list',  defaults: ['page' => 0])]
-    public function showAllTasks(int $page = 0, TaskRepository $taskRepository): Response
+    public function showAllTasks(int $page, TaskRepository $taskRepository): Response
     {
         $offset = max(0, $page);
         $paginator = $taskRepository->getTaskPaginator($offset);
