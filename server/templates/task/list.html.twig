@@ -31,6 +31,17 @@
 					{% else %}
 						<div>Задания найдены не были</div>
 					{% endfor %}
+					{% if previous >= 0 %}
+						+
+						<a href="{{ path('app_task_list', { page: previous }) }}">Previous</a>
+						+
+					{% endif %}
+					+
+					{% if next < tasks|length %}
+						+
+						<a href="{{ path('app_task_list', { page: next }) }}">Next</a>
+						+
+					{% endif %}
 				</ul>
 			</div>
 		</div>
