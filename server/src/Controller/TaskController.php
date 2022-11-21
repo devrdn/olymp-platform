@@ -10,8 +10,6 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class TaskController extends AbstractController
 {
-    private const OFFSET  = 20;
-
     #[Route('/task/{page}', methods: ['GET'], name: 'app_task_list',  defaults: ['page' => 0])]
     public function showAllTasks(int $page, TaskRepository $taskRepository): Response
     {
