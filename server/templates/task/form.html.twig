@@ -1,19 +1,67 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}
-    Form
+	Form
 {% endblock %}
 
 {% block body %}
-  <div class="wrapper">
-    {{ form_start(form) }}
-         <div>
-            {{ form_label(form.name) }}
-            {{ form_widget(form.name) }}
-            <span>
-                {{ form_errors(form.name) }}
-            </span>
-         </div>
-    {{ form_end(form, {'render_rest': false}) }}    
-  </div>
+	<div class="wrapper">
+		{{ form_start(form) }}
+		<div>
+			{{ form_label(form.name) }}
+			{{ form_widget(form.name) }}
+			<span>
+				{{ form_errors(form.name) }}
+			</span>
+		</div>
+
+		<div>
+			{{ form_label(form.description) }}
+			{{ form_widget(form.description) }}
+			<span>
+				{{ form_errors(form.description) }}
+			</span>
+		</div>
+
+		<div>
+			{{ form_label(form.time_limit) }}
+			{{ form_widget(form.time_limit) }}
+			<span>
+				{{ form_errors(form.time_limit) }}
+			</span>
+		</div>
+
+		<div>
+			{{ form_label(form.memory_limit) }}
+			{{ form_widget(form.memory_limit) }}
+			<span>
+				{{ form_errors(form.memory_limit) }}
+			</span>
+		</div>
+
+		<div>
+			{{ form_label(form.example_input) }}
+			{{ form_widget(form.example_input) }}
+			<span>
+				{{ form_errors(form.example_input) }}
+			</span>
+		</div>
+
+		<div>
+			{{ form_label(form.example_output) }}
+			{{ form_widget(form.example_output) }}
+			<span>
+				{{ form_errors(form.example_output) }}
+			</span>
+		</div>
+
+		<div>
+			{{ form_label(form.restriction) }}
+			{{ form_widget(form.restriction) }}
+			<span>
+				{{ form_errors(form.restriction) }}
+			</span>
+		</div>
+		{{ form_end(form, {'render_rest': false}) }}
+	</div>
 {% endblock %}

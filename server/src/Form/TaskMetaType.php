@@ -17,7 +17,6 @@ class TaskMetaType extends AbstractType
             ->add('complexity')
             ->add('source')
             ->add('createdAt')
-            ->add('task')
         ;
     }
 
