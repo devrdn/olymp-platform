@@ -6,6 +6,7 @@ use App\Entity\Task;
 use App\Form\TaskType;
 use App\Repository\TaskRepository;
 use DateTimeImmutable;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -47,8 +48,9 @@ class TaskController extends AbstractController
     public function createTask(Request $request, TaskRepository $taskRepository): Response
     {
         $task = new Task();
-        $taskForm = $this->createForm(TaskType::class, $task);
 
+        // Creating Form and Handle user request
+        $taskForm = $this->createForm(TaskType::class, $task);
         $taskForm->handleRequest($request);
 
         // Handle and Save Form
@@ -65,6 +67,39 @@ class TaskController extends AbstractController
 
             return $this->redirectToRoute('app_task_list');
         }
+
+        return $this->renderForm('task/form.html.twig', [
+            'task' => $task,
+            'form' => $taskForm,
+        ]);
+    }
+
+    #[Route('/task/update/{id<\d{1,5}>}', methods: ['GET', 'PATCH'], name: 'app_task_update')]
+    public function updateTask(int $id, Request $request, TaskRepository $taskRepository, LoggerInterface $logger): Response
+    {
+        $task = $taskRepository->find($id);
+
+        if (!$task) {
+            throw $this->createNotFoundException(
+                'Task with ID: ' . $id . ' not found'
+            );
+        }
+
+        // Creating Form with method PATCH and Handle user request
+        $taskForm = $this->createForm(TaskType::class, $task, ['method' => 'PATCH']);
+        $taskForm->handleRequest($request);
+
+        // Handle and Save Form
+        if ($taskForm->isSubmitted()  && $taskForm->isValid()) {
+            $task = $taskForm->getData();
+            $taskRepository->save($task, true);
+
+            # TODO: Create FlaskGenerator Service 
+            $this->addFlash('success', "Task `{$task->getName()}` was successfully updated.");
+
+            return $this->redirectToRoute('app_task_list');
+        }
+
 
         return $this->renderForm('task/form.html.twig', [
             'task' => $task,
