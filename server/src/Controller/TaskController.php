@@ -51,14 +51,17 @@ class TaskController extends AbstractController
 
         $taskForm->handleRequest($request);
 
+        // Handle and Save Form
         if ($taskForm->isSubmitted()  && $taskForm->isValid()) {
             /** @var Task $task */
             $task = $taskForm->getData();
             $task->getTaskMeta()->setSolved(0);
             $task->getTaskMeta()->setComplexity(0);
             $task->getTaskMeta()->setCreatedAt(new DateTimeImmutable());
-
             $taskRepository->save($task, true);
+
+            # TODO: Create FlaskGenerator Service 
+            $this->addFlash('success', "Task `{$task->getName()}` was successfully saved.");
 
             return $this->redirectToRoute('app_task_list');
         }

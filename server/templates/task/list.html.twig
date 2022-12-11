@@ -5,7 +5,13 @@
 {% endblock %}
 
 {% block body %}
-	<div class="wrapper">
+	<div
+		class="wrapper">
+		{# Flash Messages #}
+		{% for message in app.flashes('success') %}
+			{% include "_flash.html.twig" with { type: 'success', message: message } %}
+		{% endfor %}
+		{# End Flash Messages #}
 		<div class="task-list">
 			<div class="task-list__title">
 				<h1>All tasks</h1>
