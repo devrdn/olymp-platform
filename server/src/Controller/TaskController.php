@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Task;
 use App\Form\TaskType;
 use App\Repository\TaskRepository;
+use DateTimeImmutable;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -13,13 +14,10 @@ use Symfony\Component\Routing\Annotation\Route;
 class TaskController extends AbstractController
 {
     #[Route('/task/{page<\d+>}', methods: ['GET'], name: 'app_task_list',  defaults: ['page' => 0])]
-    public function showAllTasks(
-        int $page,
-        TaskRepository $taskRepository
-    ): Response {
+    public function showAllTasks(int $page, TaskRepository $taskRepository): Response
+    {
         $offset = max(0, $page);
         $paginator = $taskRepository->getTaskPaginator($offset);
-        //$tasks = $taskRepository->findAll();
 
         return $this->render('task/list.html.twig', [
             'tasks' => $paginator,
@@ -46,12 +44,24 @@ class TaskController extends AbstractController
     }
 
     #[Route('/task/create', methods: ['GET', 'POST'], name: 'app_task_create')]
-    public function createTask(
-        Request $request,
-        TaskRepository $taskRepository
-    ): Response {
+    public function createTask(Request $request, TaskRepository $taskRepository): Response
+    {
         $task = new Task();
         $taskForm = $this->createForm(TaskType::class, $task);
+
+        $taskForm->handleRequest($request);
+
+        if ($taskForm->isSubmitted()  && $taskForm->isValid()) {
+            /** @var Task $task */
+            $task = $taskForm->getData();
+            $task->getTaskMeta()->setSolved(0);
+            $task->getTaskMeta()->setComplexity(0);
+            $task->getTaskMeta()->setCreatedAt(new DateTimeImmutable());
+
+            $taskRepository->save($task, true);
+
+            return $this->redirectToRoute('app_task_list');
+        }
 
         return $this->renderForm('task/form.html.twig', [
             'task' => $task,

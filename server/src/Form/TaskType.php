@@ -24,14 +24,16 @@ class TaskType extends AbstractType
             ->add('name', TextType::class, [
                 'label' => 'Name',
                 'help' => 'The field must contain min of 2 characters and max of 255',
+                'attr' => ['class' => 'form-control'],
                 'required' => true,
+                'attr' => ['class' => 'form-control'],
                 'constraints' => [
                     new NotBlank([
                         'message' => 'This field is required, please enter valid value',
                     ]),
                     new Length([
                         'min' => 2,
-                        'max' => 5,
+                        'max' => 255,
                         'minMessage' => 'Min. Length of this field: {{ limit }}',
                         'maxMessage' => 'Max. length of this field: {{ limit }}',
                     ]),
@@ -40,6 +42,7 @@ class TaskType extends AbstractType
             ->add('description', TextareaType::class, [
                 'label' => 'Description',
                 'help' => 'The field must contain max of 2000 characters',
+                'attr' => ['class' => 'form-control'],
                 'required' => true,
                 'constraints' => [
                     new Length([
@@ -52,33 +55,36 @@ class TaskType extends AbstractType
             ])
             ->add('time_limit', NumberType::class, [
                 'label' => 'Time limit',
+                'attr' => ['class' => 'form-control'],
                 'required' => true,
                 'constraints' => [
                     new NotBlank([
                         'message' => 'This field is required, please enter valid value',
                     ]),
                     new Type([
-                        'type' => 'integer',
+                        'type' => 'numeric',
                         'message' => 'Value shoud be of type {{ type }}'
                     ])
                 ],
             ])
             ->add('memory_limit', NumberType::class, [
                 'label' => 'Memory limit',
+                'attr' => ['class' => 'form-control'],
                 'required' => true,
                 'constraints' => [
                     new NotBlank([
                         'message' => 'This field is required, please enter valid value',
                     ]),
                     new Type([
-                        'type' => 'integer',
+                        'type' => 'numeric',
                         'message' => 'Value shoud be of type {{ type }}'
                     ])
                 ],
             ])
             ->add('example_input', TextareaType::class, [
                 'label' => 'Example Input',
-                'help' => 'This field is required, please enter valid value',
+                'required' => false,
+                'attr' => ['class' => 'form-control'],
                 'constraints' => [
                     new Length([
                         'min' => 1,
@@ -90,7 +96,8 @@ class TaskType extends AbstractType
             ])
             ->add('example_output', TextareaType::class, [
                 'label' => 'Example Output',
-                'help' => 'This field is required, please enter valid value',
+                'attr' => ['class' => 'form-control'],
+                'required' => false,
                 'constraints' => [
                     new Length([
                         'min' => 1,
@@ -102,7 +109,8 @@ class TaskType extends AbstractType
             ])
             ->add('restriction', TextareaType::class, [
                 'label' => 'Restriction',
-                'help' => 'This field is required, please enter valid value',
+                'attr' => ['class' => 'form-control'],
+                'required' => false,
                 'constraints' => [
                     new Length([
                         'min' => 1,
@@ -115,13 +123,19 @@ class TaskType extends AbstractType
             ->add('TaskMeta', TaskMetaType::class, [
                 'by_reference' => false,
             ])
-            ->add('save', SubmitType::class);
+            ->add('save', SubmitType::class, [
+                'label' => 'Save Task',
+                'attr' => ['class' => 'btn btn-primary'],
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => Task::class,
+            'csrf_protection' => true,
+            'csrf_field_name' => '_token',
+            'csrf_token_id'   => 'task',
         ]);
     }
 }
