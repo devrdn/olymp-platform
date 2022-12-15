@@ -120,9 +120,6 @@ class TaskType extends AbstractType
                     ])
                 ]
             ])
-            ->add('TaskMeta', TaskMetaType::class, [
-                'by_reference' => true,
-            ])
             ->add('save', SubmitType::class, [
                 'label' => 'Save Task',
                 'attr' => ['class' => 'btn btn-primary'],

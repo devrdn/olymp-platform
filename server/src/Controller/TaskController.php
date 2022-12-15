@@ -3,7 +3,9 @@
 namespace App\Controller;
 
 use App\Entity\Task;
+use App\Entity\TaskMeta;
 use App\Form\TaskType;
+use App\Repository\TaskMetaRepository;
 use App\Repository\TaskRepository;
 use DateTimeImmutable;
 use Psr\Log\LoggerInterface;
@@ -45,9 +47,10 @@ class TaskController extends AbstractController
     }
 
     #[Route('/task/create', methods: ['GET', 'POST'], name: 'app_task_create')]
-    public function createTask(Request $request, TaskRepository $taskRepository): Response
+    public function createTask(Request $request, TaskRepository $taskRepository, TaskMetaRepository $taskMetaRepository): Response
     {
         $task = new Task();
+        $taskMeta = new TaskMeta();
 
         // Creating Form and Handle user request
         $taskForm = $this->createForm(TaskType::class, $task);
@@ -57,10 +60,13 @@ class TaskController extends AbstractController
         if ($taskForm->isSubmitted()  && $taskForm->isValid()) {
             /** @var Task $task */
             $task = $taskForm->getData();
-            $task->getTaskMeta()->setSolved(0);
-            $task->getTaskMeta()->setComplexity(0);
-            $task->getTaskMeta()->setCreatedAt(new DateTimeImmutable());
+            $taskMeta->setAuthor('Nick'); // temporary
+            $taskMeta->setTask($task);
+            $taskMeta->setSolved(0);
+            $taskMeta->setComplexity(0);
+            $taskMeta->setCreatedAt(new DateTimeImmutable());
             $taskRepository->save($task, true);
+            $taskMetaRepository->save($taskMeta, true);
 
             # TODO: Create FlaskGenerator Service 
             $this->addFlash('success', "Task `{$task->getName()}` was successfully saved.");
@@ -74,8 +80,8 @@ class TaskController extends AbstractController
         ]);
     }
 
-    #[Route('/task/update/{id<\d{1,5}>}', methods: ['GET', 'PATCH'], name: 'app_task_update')]
-    public function updateTask(int $id, Request $request, TaskRepository $taskRepository, LoggerInterface $logger): Response
+    #[Route('/task/update/{id<\d{1,5}>}', methods: ['GET', 'POST'], name: 'app_task_update')]
+    public function updateTask(int $id, Request $request, TaskRepository $taskRepository): Response
     {
         $task = $taskRepository->find($id);
 
@@ -85,8 +91,8 @@ class TaskController extends AbstractController
             );
         }
 
-        // Creating Form with method PATCH and Handle user request
-        $taskForm = $this->createForm(TaskType::class, $task, ['method' => 'PATCH']);
+        // Creating Form with method POST and Handle user request
+        $taskForm = $this->createForm(TaskType::class, $task, ['method' => 'POST']);
         $taskForm->handleRequest($request);
 
         // Handle and Save Form
