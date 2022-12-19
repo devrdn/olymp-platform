@@ -8,7 +8,6 @@ use App\Form\TaskType;
 use App\Repository\TaskMetaRepository;
 use App\Repository\TaskRepository;
 use DateTimeImmutable;
-use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -90,7 +89,7 @@ class TaskController extends AbstractController
                 'Task with ID: ' . $id . ' not found'
             );
         }
-
+        
         // Creating Form with method POST and Handle user request
         $taskForm = $this->createForm(TaskType::class, $task, ['method' => 'POST']);
         $taskForm->handleRequest($request);

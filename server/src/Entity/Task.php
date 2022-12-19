@@ -43,6 +43,10 @@ class Task
     #[ORM\OneToOne(mappedBy: 'task', cascade: ['persist', 'remove'], orphanRemoval: true)]
     private ?TaskMeta $taskMeta = null;
 
+    #[ORM\Column]
+    private ?bool $published = null;
+
+
     public function __construct()
     {
         $this->taskTests = new ArrayCollection();
@@ -180,6 +184,18 @@ class Task
         }
 
         $this->taskMeta = $taskMeta;
+
+        return $this;
+    }
+
+    public function isPublished(): ?bool
+    {
+        return $this->published;
+    }
+
+    public function setPublished(bool $published): self
+    {
+        $this->published = $published;
 
         return $this;
     }
