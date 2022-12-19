@@ -31,7 +31,7 @@ class TaskController extends AbstractController
         ]);
     }
 
-    #[Route('/task/view/{id}', methods: ['GET'], name: 'app_task_single_page')]
+    #[Route('/task/view/{id}', methods: ['GET'], name: 'app_task_single')]
     public function showTask(int $id, TaskRepository $taskRepository): Response
     {
         $task = $taskRepository->find($id);
@@ -89,10 +89,15 @@ class TaskController extends AbstractController
                 'Task with ID: ' . $id . ' not found'
             );
         }
-        
-        // Creating Form with method POST and Handle user request
+
+
+        // Creating Form with method POST
         $taskForm = $this->createForm(TaskType::class, $task, ['method' => 'POST']);
-        $taskForm->handleRequest($request);
+
+        // handle user request if task is not published
+        if (!$task->isPublished()) {
+            $taskForm->handleRequest($request);
+        }
 
         // Handle and Save Form
         if ($taskForm->isSubmitted()  && $taskForm->isValid()) {
@@ -102,7 +107,7 @@ class TaskController extends AbstractController
             # TODO: Create FlaskGenerator Service 
             $this->addFlash('success', "Task `{$task->getName()}` was successfully updated.");
 
-            return $this->redirectToRoute('app_task_list');
+            return $this->redirectToRoute('app_task_single', ['id' => $id]);
         }
 
 
