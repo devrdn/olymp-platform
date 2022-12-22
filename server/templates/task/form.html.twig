@@ -5,9 +5,9 @@
 {% endblock %}
 
 {% block body %}
-	<div class="wrapper">
-		{% if task.isPublished %}
-			{% include "_flash.html.twig" with { type: 'warning', 'message': 'You can\'t edit this task, because is published' } %}	
+<div class="wrapper">
+	{% if task.isPublished %}
+		{% include "_flash.html.twig" with { type: 'warning', 'message': 'You can\'t edit this task, because is published' } %}	
 		{% endif %}
 		{{ form_start(form) }}
 		<div class="form-group">
@@ -75,4 +75,22 @@
 
 		{{ form_end(form,{'render_rest':false}) }}
 	</div>
+{% endblock %}
+
+{% block script %}
+	<script src="https://cdn.ckeditor.com/ckeditor5/35.4.0/classic/ckeditor.js"></script>
+	<script src="/utils/ckeditor.js"></script>
+	<script>
+		const extraConfig = {
+			toolbar: ['heading', '|'],
+			heading: {
+				options: [
+					{ model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
+				],
+			},
+		};
+		ckEditor(document.querySelector("#task_description"));
+		ckEditor(document.querySelector("#task_example_input"), extraConfig);
+		ckEditor(document.querySelector("#task_example_output"), extraConfig);
+	</script>
 {% endblock %}

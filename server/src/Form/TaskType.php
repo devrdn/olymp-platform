@@ -43,7 +43,7 @@ class TaskType extends AbstractType
                 'label' => 'Description',
                 'help' => 'The field must contain max of 2000 characters',
                 'attr' => ['class' => 'form-control'],
-                'required' => true,
+                'required' => false,
                 'constraints' => [
                     new Length([
                         'min' => 1,

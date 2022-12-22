@@ -49,7 +49,6 @@ class TaskController extends AbstractController
     public function createTask(Request $request, TaskRepository $taskRepository, TaskMetaRepository $taskMetaRepository): Response
     {
         $task = new Task();
-        $taskMeta = new TaskMeta();
 
         // Creating Form and Handle user request
         $taskForm = $this->createForm(TaskType::class, $task);
@@ -59,6 +58,8 @@ class TaskController extends AbstractController
         if ($taskForm->isSubmitted()  && $taskForm->isValid()) {
             /** @var Task $task */
             $task = $taskForm->getData();
+            $task->setPublished(0);
+            $taskMeta = new TaskMeta();
             $taskMeta->setAuthor('Nick'); // temporary
             $taskMeta->setTask($task);
             $taskMeta->setSolved(0);
