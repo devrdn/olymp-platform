@@ -12,14 +12,20 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
+/**
+ * Controller responsible for user registration
+ */
 class RegistrationController extends AbstractController
 {
-    #[Route('/register', name: 'app_register')]
+    // todo: add email verify and user ip 
+
+    #[Route('/register', name: 'app_register', methods: ["POST", "GET"])]
     public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, UserRepository $userRepository): Response
     {
         $user = new User();
+
+        // create form and handle user request
         $form = $this->createForm(RegistrationFormType::class, $user);
         $form->handleRequest($request);
 
@@ -32,6 +38,7 @@ class RegistrationController extends AbstractController
                 )
             );
 
+            // set created at date
             $user->setCreatedAt(new \DateTimeImmutable());
 
             $userRepository->save($user, true);
@@ -39,6 +46,7 @@ class RegistrationController extends AbstractController
             return $this->redirectToRoute('app_task_list');
         }
 
+        // render registration form
         return $this->render('registration/register.html.twig', [
             'registrationForm' => $form->createView(),
         ]);

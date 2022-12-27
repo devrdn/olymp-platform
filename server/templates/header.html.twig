@@ -5,6 +5,9 @@
         <span class="fs-4">MSU Programming Contester</span>
       </a>
 
+      <div>
+        {{ app.user ? app.user : '' }}
+      </div>
       <ul class="nav nav-pills">
         <li class="nav-item"><a href="/" class="nav-link active" aria-current="page">Home</a></li>
         <li class="nav-item"><a href="/contests" class="nav-link">Contests</a></li>
