@@ -17,9 +17,12 @@ security:
             lazy: true
             provider: app_user_provider
             form_login:
+                # todo: change to the main page
                 login_path: app_login
                 check_path: app_login
                 username_parameter: _email
+            logout:
+                path: app_logout
             # composer require symfony/rate-limiter
             # login_throttling:
             #    max_attempts: 3

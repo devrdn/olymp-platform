@@ -26,4 +26,10 @@ class LoginController extends AbstractController
             'auth_error' => $error,
         ]);
     }
+
+    #[Route('/logout', name: 'app_logout', methods: ["POST", "GET"])]
+    public function logout(AuthenticationUtils $authenticationUtils): Response
+    {
+        return new Response("Logout");
+    }
 }
