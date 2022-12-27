@@ -30,6 +30,8 @@ class LoginController extends AbstractController
     #[Route('/logout', name: 'app_logout', methods: ["POST", "GET"])]
     public function logout(AuthenticationUtils $authenticationUtils): Response
     {
-        return new Response("Logout");
+        // controller can't be empty, so ...
+        // return new response!
+        return new Response("You are cool, bro!");
     }
 }
