@@ -23,3 +23,5 @@
 /server/phpunit.xml
 /server/phpunit.xml.dist
 ###< symfony/phpunit-bridge ###
+
+.vscode
