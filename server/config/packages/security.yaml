@@ -20,6 +20,9 @@ security:
                 login_path: app_login
                 check_path: app_login
                 username_parameter: _email
+            # composer require symfony/rate-limiter
+            # login_throttling:
+            #    max_attempts: 3
         secured_area:
             form_login:
                 enable_csrf: true
