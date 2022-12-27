@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Task;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -119,6 +120,10 @@ class TaskType extends AbstractType
                         'maxMessage' => 'Max. length of this field: {{ limit }}',
                     ])
                 ]
+            ])
+            ->add('published', CheckboxType::class, [
+                'label' => 'Published',
+                'required' => false,
             ])
             ->add('save', SubmitType::class, [
                 'label' => 'Save Task',

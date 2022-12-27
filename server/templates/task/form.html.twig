@@ -12,7 +12,7 @@
 		{{ form_start(form) }}
 		<div class="form-group">
 			{{ form_label(form.name) }}
-			{{ form_widget(form.name, { disabled: task.isPublished }) }}
+			{{ form_widget(form.name) }}
 			<span>
 				{{ form_errors(form.name) }}
 			</span>
@@ -20,7 +20,7 @@
 
 		<div class="form-group">
 			{{ form_label(form.description) }}
-			{{ form_widget(form.description, { disabled: task.isPublished }) }}
+			{{ form_widget(form.description) }}
 			<span>
 				{{ form_errors(form.description) }}
 			</span>
@@ -28,7 +28,7 @@
 
 		<div class="form-group">
 			{{ form_label(form.time_limit) }}
-			{{ form_widget(form.time_limit, { disabled: task.isPublished }) }}
+			{{ form_widget(form.time_limit) }}
 			<span>
 				{{ form_errors(form.time_limit) }}
 			</span>
@@ -36,7 +36,7 @@
 
 		<div class="form-group">
 			{{ form_label(form.memory_limit) }}
-			{{ form_widget(form.memory_limit, { disabled: task.isPublished }) }}
+			{{ form_widget(form.memory_limit) }}
 			<span>
 				{{ form_errors(form.memory_limit) }}
 			</span>
@@ -44,7 +44,7 @@
 
 		<div class="form-group">
 			{{ form_label(form.example_input) }}
-			{{ form_widget(form.example_input, { disabled: task.isPublished }) }}
+			{{ form_widget(form.example_input) }}
 			<span>
 				{{ form_errors(form.example_input) }}
 			</span>
@@ -52,7 +52,7 @@
 
 		<div class="form-group">
 			{{ form_label(form.example_output) }}
-			{{ form_widget(form.example_output, { disabled: task.isPublished }) }}
+			{{ form_widget(form.example_output) }}
 			<span>
 				{{ form_errors(form.example_output) }}
 			</span>
@@ -60,14 +60,22 @@
 
 		<div class="form-group">
 			{{ form_label(form.restriction) }}
-			{{ form_widget(form.restriction, { disabled: task.isPublished }) }}
+			{{ form_widget(form.restriction) }}
 			<span>
 				{{ form_errors(form.restriction) }}
 			</span>
 		</div>
 
 		<div class="form-group">
-			{{ form_widget(form.save, { disabled: task.isPublished }) }}
+			{{ form_label(form.published) }}
+			{{ form_widget(form.published) }}
+			<span>
+				{{ form_errors(form.published) }}
+			</span>
+		</div>
+
+		<div class="form-group">
+			{{ form_widget(form.save) }}
 		</div>
 		{{ form_row(form._token) }}
 
@@ -89,6 +97,7 @@
 				],
 			},
 		};
+
 		ckEditor(document.querySelector("#task_description"));
 		ckEditor(document.querySelector("#task_example_input"), extraConfig);
 		ckEditor(document.querySelector("#task_example_output"), extraConfig);

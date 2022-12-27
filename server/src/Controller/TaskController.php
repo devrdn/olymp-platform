@@ -8,6 +8,7 @@ use App\Form\TaskType;
 use App\Repository\TaskMetaRepository;
 use App\Repository\TaskRepository;
 use DateTimeImmutable;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -81,31 +82,38 @@ class TaskController extends AbstractController
     }
 
     #[Route('/task/update/{id<\d{1,5}>}', methods: ['GET', 'POST'], name: 'app_task_update')]
-    public function updateTask(int $id, Request $request, TaskRepository $taskRepository): Response
+    public function updateTask(int $id, Request $request, TaskRepository $taskRepository, LoggerInterface $logg): Response
     {
         $task = $taskRepository->find($id);
 
+        // check if task is exists
+        // todo: change throw to addflash
         if (!$task) {
             throw $this->createNotFoundException(
                 'Task with ID: ' . $id . ' not found'
             );
         }
 
+        $isPublished = $task->isPublished();
 
-        // Creating Form with method POST
+        // Creating Form with method POST and handle user request
         $taskForm = $this->createForm(TaskType::class, $task, ['method' => 'POST']);
-
-        // handle user request if task is not published
-        if (!$task->isPublished()) {
-            $taskForm->handleRequest($request);
-        }
+        $taskForm->handleRequest($request);
 
         // Handle and Save Form
         if ($taskForm->isSubmitted()  && $taskForm->isValid()) {
+
+            /** @var Task $task */
             $task = $taskForm->getData();
+
+            // todo: change as separate route /task/setPublished
+            if ($isPublished && $task->isPublished() === $isPublished) {
+                return $this->redirectToRoute('app_task_update', ['id' => $id]);
+            }
+
             $taskRepository->save($task, true);
 
-            # TODO: Create FlaskGenerator Service 
+            // todo: Maybe Create FlaskGenerator Service 
             $this->addFlash('success', "Task `{$task->getName()}` was successfully updated.");
 
             return $this->redirectToRoute('app_task_single', ['id' => $id]);
