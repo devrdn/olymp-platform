@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Repository\TaskRepository;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -10,7 +11,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class TaskController extends AbstractController
 {
-    #[Route('/task/{page}', methods: ['GET'], name: 'app_task_list',  defaults: ['page' => 0])]
+    #[Route('/task/{page<\d+>}', methods: ['GET'], name: 'app_task_list',  defaults: ['page' => 0])]
     public function showAllTasks(int $page, TaskRepository $taskRepository): Response
     {
         $offset = max(0, $page);
@@ -24,7 +25,7 @@ class TaskController extends AbstractController
         ]);
     }
 
-    #[Route('/task/view/{id}', methods: ['GET'], name: 'app_task_single_page')]
+    #[Route('/task/view/{id<\d+>}', methods: ['GET'], name: 'app_task_single_page')]
     public function showTask(int $id,  TaskRepository $taskRepository): Response
     {
         $task = $taskRepository->find($id);
