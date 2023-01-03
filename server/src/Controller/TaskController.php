@@ -73,8 +73,8 @@ class TaskController extends AbstractController
             if ($archive) {
                 $zip = new ZipArchive();
                 $fileSystem = new Filesystem();
-                $directoryName = $this->getParameter('test_directory') . '/' . $taskTest->getTask()->getId();
-                $path = $this->getParameter('test_path') . '/' . $taskTest->getTask()->getId();
+                $directoryName = $this->getParameter('test_directory') . '/' . $taskTest->getTask()->getId() . '/tests';
+                $path = $this->getParameter('test_path') . '/' . $taskTest->getTask()->getId() . '/tests';
 
                 // create new task directory for tests 
                 if (!$fileSystem->exists($directoryName)) {
