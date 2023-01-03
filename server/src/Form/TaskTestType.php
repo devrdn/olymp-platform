@@ -28,15 +28,12 @@ class TaskTestType extends AbstractType
             ->add('tests', FileType::class, [
                 'mapped' => false,
                 'required' => true,
-                'attr' => ['class' => 'form-control', 'accept' => ".zip, .rar, .7z"],
+                'attr' => ['class' => 'form-control', 'accept' => ".zip"],
                 'constraints' => [
                     new File([
                         'maxSize' => '1024k',
                         'mimeTypes' => [
                             'application/zip',
-                            'application/vnd.rar',
-                            'application/x-7z-compressed',
-                            "application/x-rar"
                         ],
                     ])
                 ]
