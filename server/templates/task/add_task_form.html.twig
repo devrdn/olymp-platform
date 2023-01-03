@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+	Form
+{% endblock %}
+
+{% block body %}
+	<div class="wrapper">
+		{{ form_start(form) }}
+		<div class="form-group">
+			{{ form_label(form.task) }}
+			{{ form_widget(form.task) }}
+			<span>
+				{{ form_errors(form.task) }}
+			</span>
+		</div>
+
+		<div class="form-group">
+			{{ form_label(form.tests) }}
+			{{ form_widget(form.tests) }}
+			<span>
+				{{ form_errors(form.tests) }}
+			</span>
+		</div>
+
+		<div class="form-group">
+			{{ form_widget(form.save) }}
+		</div>
+		{{ form_row(form._token) }}
+
+		{{ form_errors(form) }}
+
+		{{ form_end(form,{'render_rest':false}) }}
+	</div>
+{% endblock %}
