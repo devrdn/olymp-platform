@@ -5,7 +5,17 @@
 {% endblock %}
 
 {% block body %}
-	<div class="wrapper">
+	<div
+		class="wrapper">
+		{# Flash Messages #}
+		{% for message in app.flashes('success') %}
+			{% include "_flash.html.twig" with { type: 'success', message: message } %}
+		{% endfor %}
+
+		{% for message in app.flashes('error') %}
+			{% include "_flash.html.twig" with { type: 'danger', message: message } %}
+		{% endfor %}
+		{# End Flash Messages #}
 		<div class="task-list">
 			<div class="task-list__title">
 				<h1>All tasks</h1>
@@ -14,7 +24,7 @@
 				<ul>
 					{% for task in tasks %}
 						<li>
-							<a href="{{ path('app_task_single_page', { id: task.id }) }}">{{ task.name }}</a>
+							<a href="{{ path('app_task_single', { id: task.id }) }}">{{ task.name }}</a>
 						</li>
 					{% else %}
 						<div>Задания найдены не были</div>

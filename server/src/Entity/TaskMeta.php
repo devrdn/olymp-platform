@@ -3,6 +3,9 @@
 namespace App\Entity;
 
 use App\Repository\TaskMetaRepository;
+use DateTime;
+use DateTimeImmutable;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: TaskMetaRepository::class)]
@@ -14,17 +17,17 @@ class TaskMeta
     private ?int $id = null;
 
     #[ORM\OneToOne(inversedBy: 'taskMeta', cascade: ['persist', 'remove'])]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(onDelete: "CASCADE", nullable: false)]
     private ?Task $task = null;
 
     #[ORM\Column(length: 255)]
     private ?string $author = null;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $solved = null;
+    #[ORM\Column(type: Types::INTEGER, options: ["default" => 0])]
+    private ?int $solved = 0;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $complexity = null;
+    #[ORM\Column(type: Types::INTEGER, options: ["default" => 0])]
+    private ?int $complexity = 0;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $source = null;
@@ -102,7 +105,7 @@ class TaskMeta
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeImmutable $createdAt): self
+    public function setCreatedAt(?DateTimeImmutable $createdAt): self
     {
         $this->createdAt = $createdAt;
 
