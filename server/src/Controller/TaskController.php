@@ -64,63 +64,76 @@ class TaskController extends AbstractController
         $taskForm = $this->createForm(TaskTestType::class, $taskTest);
         $taskForm->handleRequest($request);
 
-        if ($taskForm->isSubmitted() && $taskForm->isValid()) {
-            /** @var TaskTest $taskTest */
-            $taskTest = $taskForm->getData();
-            $archive = $taskForm->get('tests')->getData();
+        if (!($taskForm->isSubmitted() && $taskForm->isValid())) {
+            return $this->renderForm('task/add_task_form.html.twig', [
+                'task' => $task,
+                'form' => $taskForm,
+            ]);
+        }
+        /** @var TaskTest $taskTest */
+        $taskTest = $taskForm->getData();
+        $archive = $taskForm->get('tests')->getData();
 
-            // if user uploaded archive
-            if ($archive) {
-                $zip = new ZipArchive();
-                $fileSystem = new Filesystem();
-                $directoryName = $this->getParameter('test_directory') . '/' . $taskTest->getTask()->getId() . '/tests';
-                $path = $this->getParameter('test_path') . '/' . $taskTest->getTask()->getId() . '/tests';
-
-                // create new task directory for tests 
-                if (!$fileSystem->exists($directoryName)) {
-                    $fileSystem->mkdir($directoryName);
-                };
-
-                try {
-                    // Open Zip Archive
-                    $zip->open($archive);
-
-                    // check if all files in archive is valid
-                    for ($i = 0; $i < $zip->numFiles; $i++) {
-                        $fileName = $zip->getNameIndex($i);
-                        if (preg_match("/(\d+)\_(input|output)\.txt/", $fileName, $matches)) {
-                            $fileCorrectName = $matches[1] . '_' . ($matches[2] === 'input' ? 'output' : 'input') . '.txt';
-                            $isValidFile = $zip->locateName($fileCorrectName);
-                            if ($isValidFile === false) {
-                                // todo: add flash message
-                                //$this->addFlash('error', 'Files do not match structure *_input.txt, *_output.txt!');
-                                throw new Exception('Files do not match structure *_input.txt, *_output.txt!');
-                                break;
-                            }
-                        } else {
-                            throw new Exception('Files do not match structure *_input.txt, *_output.txt!');
-                            break;
-                        }
-                    }
-
-                    // extract files in directory
-                    $zip->extractTo($directoryName);
-                } catch (Exception $ex) {
-                    throw $ex;
-                }
-
-                $taskTest->setInputData($path);
-            }
-
+        // if user uploaded archive
+        if (!$archive) {
             // save entity in db
             $taskTestRepository->save($taskTest, true);
-
             return $this->redirectToRoute('app_task_list');
         }
 
-        return $this->renderForm('task/add_task_form.html.twig', [
-            'task' => $task,
-            'form' => $taskForm,
-        ]);
+        $outputDir = $this->getOutDir($taskTest);
+        
+        $path = $this->getParameter('test_path') . '/' . $taskTest->getTask()->getId() . '/tests';
+        $this->extractTests($archive, $outputDir);
+
+        $taskTest->setInputData($path);
+        $taskTestRepository->save($taskTest, true);
+
+        return $this->redirectToRoute('app_task_list');
+    }
+
+    private function getOutDir(TaskTest $taskTest): string {
+        $fileSystem = new Filesystem();
+        $outputDir = $this->getParameter('test_directory') . '/' . $taskTest->getTask()->getId() . '/tests';
+        
+        // create new task directory for tests
+        if (!$fileSystem->exists($outputDir)) {
+            $fileSystem->mkdir($outputDir);
+        }
+
+        return $outputDir;
+    }
+
+    private function extractTests($archive, $outputPath)
+    {
+        $zip = new ZipArchive();
+
+        try {
+            // Open Zip Archive
+            $zip->open($archive);
+
+            // check if all files in archive is valid
+            for ($i = 0; $i < $zip->numFiles; $i++) {
+                $fileName = $zip->getNameIndex($i);
+                if (preg_match("/(\d+)\_(input|output)\.txt/", $fileName, $matches)) {
+                    $fileCorrectName = $matches[1] . '_' . ($matches[2] === 'input' ? 'output' : 'input') . '.txt';
+                    $isValidFile = $zip->locateName($fileCorrectName);
+                    if ($isValidFile === false) {
+                        // todo: add flash message
+                        //$this->addFlash('error', 'Files do not match structure *_input.txt, *_output.txt!');
+                        throw new Exception('Files do not match structure *_input.txt, *_output.txt!');
+                        break;
+                    }
+                } else {
+                    throw new Exception('Files do not match structure *_input.txt, *_output.txt!');
+                    break;
+                }
+            }
+
+            // extract files in directory
+            $zip->extractTo($outputPath);
+        } catch (Exception $ex) {
+            throw $ex;
+        }
     }
 }
