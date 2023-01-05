@@ -9,6 +9,7 @@ use App\Repository\TaskMetaRepository;
 use App\Repository\TaskRepository;
 use DateTimeImmutable;
 use Psr\Log\LoggerInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -32,8 +33,8 @@ class TaskController extends AbstractController
         ]);
     }
 
-    #[Route('/task/view/{id}', methods: ['GET'], name: 'app_task_single')]
-    public function showTask(int $id, TaskRepository $taskRepository): Response
+    #[Route('/task/view/{id<\d+>}', methods: ['GET'], name: 'app_task_single_page')]
+    public function showTask(int $id,  TaskRepository $taskRepository): Response
     {
         $task = $taskRepository->find($id);
 
