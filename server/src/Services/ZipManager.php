@@ -21,11 +21,6 @@ class ZipManager
    private ZipArchive $zip;
 
 
-   public function __construct(string $archive)
-   {
-      $this->archive = $archive;
-      $this->zip = new ZipArchive();
-   }
 
    /**
     * @var string Openning file error
@@ -42,6 +37,13 @@ class ZipManager
     */
    private const ERR_NO_COUPLE = "Some files doesn't have couple";
 
+
+
+   public function __construct(string $archive)
+   {
+      $this->archive = $archive;
+      $this->zip = new ZipArchive();
+   }
 
 
    /**
