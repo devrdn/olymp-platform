@@ -16,12 +16,31 @@
 		</div>
 
 		<div class="form-group">
+			{{ form_label(form.input_pattern) }}
+			{{ form_widget(form.input_pattern) }}
+			<span>
+				{{ form_errors(form.input_pattern) }}
+				{{ form_help(form.input_pattern) }}
+			</span>
+		</div>
+
+		<div class="form-group">
+			{{ form_label(form.output_pattern) }}
+			{{ form_widget(form.output_pattern) }}
+			<span>
+				{{ form_errors(form.output_pattern) }}
+				{{ form_help(form.output_pattern) }}
+			</span>
+		</div>
+
+		<div class="form-group">
 			{{ form_label(form.tests) }}
 			{{ form_widget(form.tests) }}
 			<span>
 				{{ form_errors(form.tests) }}
 			</span>
 		</div>
+
 
 		<div class="form-group">
 			{{ form_widget(form.save) }}

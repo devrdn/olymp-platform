@@ -6,9 +6,11 @@ use App\Entity\TaskTest;
 use App\Form\TaskTestType;
 use App\Repository\TaskRepository;
 use App\Repository\TaskTestRepository;
+use App\Services\ZipManager;
 use Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -64,63 +66,63 @@ class TaskController extends AbstractController
         $taskForm = $this->createForm(TaskTestType::class, $taskTest);
         $taskForm->handleRequest($request);
 
-        if ($taskForm->isSubmitted() && $taskForm->isValid()) {
-            /** @var TaskTest $taskTest */
-            $taskTest = $taskForm->getData();
-            $archive = $taskForm->get('tests')->getData();
 
-            // if user uploaded archive
-            if ($archive) {
-                $zip = new ZipArchive();
-                $fileSystem = new Filesystem();
-                $directoryName = $this->getParameter('test_directory') . '/' . $taskTest->getTask()->getId() . '/tests';
-                $path = $this->getParameter('test_path') . '/' . $taskTest->getTask()->getId() . '/tests';
+        // if form is not submitted and valid
+        if (!($taskForm->isSubmitted() && $taskForm->isValid())) {
+            return $this->renderForm('task/add_task_form.html.twig', [
+                'task' => $task,
+                'form' => $taskForm,
+            ]);
+        }
 
-                // create new task directory for tests 
-                if (!$fileSystem->exists($directoryName)) {
-                    $fileSystem->mkdir($directoryName);
-                };
+        // if form is submitted and valid
 
-                try {
-                    // Open Zip Archive
-                    $zip->open($archive);
+        /** 
+         * @var TaskTest $taskTest 
+         */
+        $taskTest = $taskForm->getData();
+        $archive = $taskForm->get('tests')->getData();
+        $input = $taskForm->get('input_pattern')->getData();
+        $output =  $taskForm->get('output_pattern')->getData();
 
-                    // check if all files in archive is valid
-                    for ($i = 0; $i < $zip->numFiles; $i++) {
-                        $fileName = $zip->getNameIndex($i);
-                        if (preg_match("/(\d+)\_(input|output)\.txt/", $fileName, $matches)) {
-                            $fileCorrectName = $matches[1] . '_' . ($matches[2] === 'input' ? 'output' : 'input') . '.txt';
-                            $isValidFile = $zip->locateName($fileCorrectName);
-                            if ($isValidFile === false) {
-                                // todo: add flash message
-                                //$this->addFlash('error', 'Files do not match structure *_input.txt, *_output.txt!');
-                                throw new Exception('Files do not match structure *_input.txt, *_output.txt!');
-                                break;
-                            }
-                        } else {
-                            throw new Exception('Files do not match structure *_input.txt, *_output.txt!');
-                            break;
-                        }
-                    }
-
-                    // extract files in directory
-                    $zip->extractTo($directoryName);
-                } catch (Exception $ex) {
-                    throw $ex;
-                }
-
-                $taskTest->setInputData($path);
-            }
-
-            // save entity in db
+        // if has no uploaded tests
+        if (!$archive) {
             $taskTestRepository->save($taskTest, true);
-
             return $this->redirectToRoute('app_task_list');
         }
 
-        return $this->renderForm('task/add_task_form.html.twig', [
-            'task' => $task,
-            'form' => $taskForm,
-        ]);
+        // todo: add flash messages and refactor some code with error Messages and service
+        $zip = new ZipManager($archive);
+
+        if ($err = $zip->checkZip($input, $output, "/\[id\]/", !empty($output))) {
+            // $this->addFlash("error", $err);
+            return $this->redirectToRoute('app_task_list');
+        }
+        
+        $testDirectoryName = $this->getOutputDir($taskTest);
+
+        // extract files in directory
+        $zip->extractTo($testDirectoryName);
+        $taskTest->setInputData($testDirectoryName);
+
+        return $this->redirectToRoute('app_task_list');
+    }
+
+    private function getOutputDir(TaskTest $taskTest): string|Response
+    {
+        $fileSystem = new Filesystem();
+        $outputDir = $this->getParameter('test_directory') . '/' . $taskTest->getTask()->getId() . '/tests';
+
+        // create new task directory for tests
+        if (!$fileSystem->exists($outputDir)) {
+            try {
+                $fileSystem->mkdir($outputDir);
+            } catch (IOException) {
+                //$this->addFlash('danger', 'Cannot create test directory');
+                return $this->redirectToRoute('app_task_list');
+            }
+        }
+
+        return $outputDir;
     }
 }
