@@ -7,7 +7,6 @@ use App\Form\TaskTestType;
 use App\Repository\TaskRepository;
 use App\Repository\TaskTestRepository;
 use App\Services\ZipManager;
-use Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Filesystem\Exception\IOException;
@@ -15,7 +14,6 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use ZipArchive;
 
 class TaskController extends AbstractController
 {
@@ -48,7 +46,7 @@ class TaskController extends AbstractController
     }
 
     #[Route('/task/addtest/{id<\d+>}', methods: ['POST', 'GET'], name: 'app_task_add_test')]
-    public function addTest(int $id, Request $request, TaskRepository $taskRepository, TaskTestRepository $taskTestRepository, LoggerInterface $logger): Response
+    public function addTest(int $id, Request $request, TaskRepository $taskRepository, TaskTestRepository $taskTestRepository, ZipManager $zipManager): Response
     {
         // find task with this id
         $task = $taskRepository->find($id);
@@ -92,18 +90,18 @@ class TaskController extends AbstractController
         }
 
         // todo: add flash messages and refactor some code with error Messages and service
-        $zip = new ZipManager($archive);
 
-        if ($err = $zip->checkZip($input, $output, "/\[id\]/", !empty($output))) {
+        if (($err = $zipManager->isAllFilesCorrect($archive, $input, $output, "/\[id\]/", !empty($output)) !== TRUE)) {
             // $this->addFlash("error", $err);
             return $this->redirectToRoute('app_task_list');
         }
-        
+
         $testDirectoryName = $this->getOutputDir($taskTest);
 
         // extract files in directory
-        $zip->extractTo($testDirectoryName);
-        $taskTest->setInputData($testDirectoryName);
+        $zipManager->extractTo($testDirectoryName);
+        //$zip->extractTo($testDirectoryName);
+        //$taskTest->setInputData($testDirectoryName);
 
         return $this->redirectToRoute('app_task_list');
     }

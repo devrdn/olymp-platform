@@ -10,17 +10,8 @@ use ZipArchive;
  */
 class ZipManager
 {
-   /**
-    * @var string Path to zip archive
-    */
-   private string $archive;
 
-   /**
-    * @var ZipArchive $zip
-    */
    private ZipArchive $zip;
-
-
 
    /**
     * @var string Openning file error
@@ -38,14 +29,10 @@ class ZipManager
    private const ERR_NO_COUPLE = "Some files doesn't have couple";
 
 
-
-   public function __construct(string $archive)
+   public function __construct()
    {
-      $this->archive = $archive;
-      $this->zip = new ZipArchive();
+      $this->zip = new ZipArchive;
    }
-
-
    /**
     * Check if files in the zip archive match the correct names
     *
@@ -55,10 +42,10 @@ class ZipManager
     *
     * @return string|bool Error or `TRUE` if there are no errors
     */
-   public function checkZip(string $input, string $output, string $fileIdintifierPattern, bool $hasOutput = true): string|bool
+   public function isAllFilesCorrect(string $archive, string $input, string $output, string $fileIdintifierPattern, bool $hasOutput = true): string|bool
    {
       // Open Zip Archive
-      if ($this->zip->open($this->archive) !== true) {
+      if ($this->zip->open($archive) !== true) {
          return self::ERR_OPEN;
       }
 
@@ -96,7 +83,7 @@ class ZipManager
          }
       }
 
-      return false;
+      return true;
    }
 
    /**
