@@ -14,6 +14,7 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use ZipArchive;
 
 class TaskController extends AbstractController
 {
@@ -90,8 +91,13 @@ class TaskController extends AbstractController
         }
 
         // todo: add flash messages and refactor some code with error Messages and service
+        $zip = new ZipArchive();
 
-        if (($err = $zipManager->isAllFilesCorrect($archive, $input, $output, "/\[id\]/", !empty($output)) !== TRUE)) {
+        if ($zip->open($archive) !== TRUE) {
+            return $this->redirectToRoute('app_task_list');
+        }
+
+        if (($err = $zipManager->isAllFilesCorrect($zip, $input, $output, "/\[id\]/", !empty($output)) !== TRUE)) {
             // $this->addFlash("error", $err);
             return $this->redirectToRoute('app_task_list');
         }
@@ -99,7 +105,8 @@ class TaskController extends AbstractController
         $testDirectoryName = $this->getOutputDir($taskTest);
 
         // extract files in directory
-        $zipManager->extractTo($testDirectoryName);
+        $zip->extractTo($testDirectoryName);
+        $zip->close();
         //$zip->extractTo($testDirectoryName);
         //$taskTest->setInputData($testDirectoryName);
 

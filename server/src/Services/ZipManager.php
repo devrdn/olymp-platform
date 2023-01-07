@@ -16,7 +16,7 @@ class ZipManager
    /**
     * @var string Openning file error
     */
-   private const ERR_OPEN = "Could not open zip archive";
+   private const ERR_OPEN = "Zip Archive is Not openned";
 
    /**
     * @var string Invalid file name error
@@ -33,6 +33,17 @@ class ZipManager
    {
       $this->zip = new ZipArchive;
    }
+
+   /**
+    * @param ZipArchive $zip Zip Archive
+    *
+    * @return bool if Zip archive openned
+    */
+   private function isZipOpenned(ZipArchive $zip): bool
+   {
+      return !empty($zip->filename);
+   }
+
    /**
     * Check if files in the zip archive match the correct names
     *
@@ -42,10 +53,10 @@ class ZipManager
     *
     * @return string|bool Error or `TRUE` if there are no errors
     */
-   public function isAllFilesCorrect(string $archive, string $input, string $output, string $fileIdintifierPattern, bool $hasOutput = true): string|bool
+   public function isAllFilesCorrect(ZipArchive $zip, string $input, string $output, string $fileIdintifierPattern, bool $hasOutput = true): string|bool
    {
-      // Open Zip Archive
-      if ($this->zip->open($archive) !== true) {
+
+      if (!$this->isZipOpenned($zip)) {
          return self::ERR_OPEN;
       }
 
@@ -58,9 +69,9 @@ class ZipManager
 
 
       // check if all files in archive is valid
-      for ($i = 0; $i < $this->zip->numFiles; $i++) {
+      for ($i = 0; $i < $zip->numFiles; $i++) {
          // get file name by index
-         $fileName = $this->zip->getNameIndex($i);
+         $fileName = $zip->getNameIndex($i);
          $isValidInput = preg_match($inputPattern, $fileName, $matches);
          $isValidOutput = $isValidInput || preg_match($outputPattern, $fileName, $matches);
 
@@ -76,7 +87,7 @@ class ZipManager
          }
 
          // check if file has couple
-         $hasCouple = $this->fileHasCouple($matches[1], $fileIdintifierPattern, $isValidInput ? $output : $input);
+         $hasCouple = $this->fileHasCouple($zip, $matches[1], $fileIdintifierPattern, $isValidInput ? $output : $input);
          if ($hasCouple === false) {
             return self::ERR_NO_COUPLE;
             break;
@@ -95,19 +106,9 @@ class ZipManager
     *
     * @return int|false Index of the couple file in the archive or FALSE if doesn't exist
     */
-   private function fileHasCouple(string $fileIdintifier, string $fileIdintifierPattern, string $coupleName)
+   private function fileHasCouple(ZipArchive $zip, string $fileIdintifier, string $fileIdintifierPattern, string $coupleName)
    {
       $coupleFileName = preg_replace($fileIdintifierPattern, $fileIdintifier, $coupleName);
-      return $this->zip->locateName($coupleFileName);
-   }
-
-   /**
-    * Extract files to directory
-    *
-    * @param string $path Directory path
-    */
-   public function extractTo(string $path)
-   {
-      $this->zip->extractTo($path);
+      return $zip->locateName($coupleFileName);
    }
 }
