@@ -7,6 +7,7 @@ use App\Form\TaskTestType;
 use App\Repository\TaskRepository;
 use App\Repository\TaskTestRepository;
 use App\Services\ZipManager;
+use App\Services\ZipService;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Filesystem\Exception\IOException;
@@ -47,7 +48,7 @@ class TaskController extends AbstractController
     }
 
     #[Route('/task/addtest/{id<\d+>}', methods: ['POST', 'GET'], name: 'app_task_add_test')]
-    public function addTest(int $id, Request $request, TaskRepository $taskRepository, TaskTestRepository $taskTestRepository, ZipManager $zipManager): Response
+    public function addTest(int $id, Request $request, TaskRepository $taskRepository, TaskTestRepository $taskTestRepository, ZipService $zipService): Response
     {
         // find task with this id
         $task = $taskRepository->find($id);
@@ -91,22 +92,19 @@ class TaskController extends AbstractController
         }
 
         // todo: add flash messages and refactor some code with error Messages and service
-        $zip = new ZipArchive();
-
-        if ($zip->open($archive) !== TRUE) {
+        if ($zipService->openZip($archive) !== TRUE) {
             return $this->redirectToRoute('app_task_list');
         }
 
-        if (($err = $zipManager->isAllFilesCorrect($zip, $input, $output, "/\[id\]/", !empty($output)) !== TRUE)) {
+        if (($err = $zipService->isAllFilesHasCouple($input, $output, "/\[id\]/", !empty($output)) !== TRUE)) {
             // $this->addFlash("error", $err);
             return $this->redirectToRoute('app_task_list');
         }
 
-        $testDirectoryName = $this->getOutputDir($taskTest);
+        $testDirectoryPath = $this->getOutputDir($taskTest);
 
         // extract files in directory
-        $zip->extractTo($testDirectoryName);
-        $zip->close();
+        $zipService->extractTo($testDirectoryPath, true);
         //$zip->extractTo($testDirectoryName);
         //$taskTest->setInputData($testDirectoryName);
 

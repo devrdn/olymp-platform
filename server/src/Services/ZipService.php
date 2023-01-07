@@ -2,21 +2,23 @@
 
 namespace App\Services;
 
-use Exception;
 use ZipArchive;
 
 /**
  * Service responsable for check zip files and extract to certain directory
  */
-class ZipManager
+class ZipService
 {
 
+   /**
+    * @var ZipArchive Zip Archive
+    */
    private ZipArchive $zip;
 
    /**
     * @var string Openning file error
     */
-   private const ERR_OPEN = "Zip Archive is Not openned";
+   private const ERR_OPEN = "Zip archive is not open";
 
    /**
     * @var string Invalid file name error
@@ -35,28 +37,46 @@ class ZipManager
    }
 
    /**
-    * @param ZipArchive $zip Zip Archive
+    * Open Zip file
     *
-    * @return bool if Zip archive openned
+    * @param string Path to Archive
+    *
+    * @return bool Did Archive Openned
     */
-   private function isZipOpenned(ZipArchive $zip): bool
+   public function openZip(string $archive): string|bool
    {
-      return !empty($zip->filename);
+      // open Zip archive
+      if ($this->zip->open($archive) !== true) {
+         return false;
+      }
+
+      return true;
    }
 
    /**
-    * Check if files in the zip archive match the correct names
+    * @param ZipArchive $zip Zip Archive
+    *
+    * @return bool Check if archive is openned
+    */
+   private function isZipOpenned(): bool
+   {
+      return !empty($this->zip->filename);
+   }
+
+   /**
+    * Check if all files files and archive has correct name and
+    * all files has couple (e.g. `1_input.txt` -> `1_output.txt`)
     *
     * @param string $input Input file name
     * @param string $output Output file name
     * @param string $fileIdintifierPattern Regular expression for file identifier (e.g. `/\[id\]/`);
+    * @param bool $hasOutput If there are output files
     *
     * @return string|bool Error or `TRUE` if there are no errors
     */
-   public function isAllFilesCorrect(ZipArchive $zip, string $input, string $output, string $fileIdintifierPattern, bool $hasOutput = true): string|bool
+   public function isAllFilesHasCouple(string $input, string $output, string $fileIdintifierPattern, bool $hasOutput = true): string|bool
    {
-
-      if (!$this->isZipOpenned($zip)) {
+      if (!$this->isZipOpenned()) {
          return self::ERR_OPEN;
       }
 
@@ -69,9 +89,9 @@ class ZipManager
 
 
       // check if all files in archive is valid
-      for ($i = 0; $i < $zip->numFiles; $i++) {
+      for ($i = 0; $i < $this->zip->numFiles; $i++) {
          // get file name by index
-         $fileName = $zip->getNameIndex($i);
+         $fileName = $this->zip->getNameIndex($i);
          $isValidInput = preg_match($inputPattern, $fileName, $matches);
          $isValidOutput = $isValidInput || preg_match($outputPattern, $fileName, $matches);
 
@@ -87,7 +107,7 @@ class ZipManager
          }
 
          // check if file has couple
-         $hasCouple = $this->fileHasCouple($zip, $matches[1], $fileIdintifierPattern, $isValidInput ? $output : $input);
+         $hasCouple = $this->fileHasCouple($matches[1], $fileIdintifierPattern, $isValidInput ? $output : $input);
          if ($hasCouple === false) {
             return self::ERR_NO_COUPLE;
             break;
@@ -97,18 +117,36 @@ class ZipManager
       return true;
    }
 
+
    /**
-    * Check if File has couple in zip archive
+    * Check File has couple in archive
     *
     * @param string $fileIdintifierPattern Identifier of the file (e.g. 1, 2, "a")
     * @param string $coupleName Template of couple name (e.g. [id]_input.txt)
-    * @param ZipArchive $zip ZipArchive
     *
     * @return int|false Index of the couple file in the archive or FALSE if doesn't exist
     */
-   private function fileHasCouple(ZipArchive $zip, string $fileIdintifier, string $fileIdintifierPattern, string $coupleName)
+   private function fileHasCouple(string $fileIdintifier, string $fileIdintifierPattern, string $coupleName)
    {
       $coupleFileName = preg_replace($fileIdintifierPattern, $fileIdintifier, $coupleName);
-      return $zip->locateName($coupleFileName);
+      return $this->zip->locateName($coupleFileName);
+   }
+
+   /**
+    * Extract files to path
+    *
+    * @param string $path Path to extract
+    * @param bool $close Should the archive be closed after extraction
+    *
+    * @return bool TRUE on success or FALSE on failure
+    */
+   public function extractTo(string $path, bool $close): bool
+   {
+      $isSuccess = $this->zip->extractTo($path);
+      if ($close) {
+         $this->zip->close();
+      }
+
+      return $isSuccess;
    }
 }
