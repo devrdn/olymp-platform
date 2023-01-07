@@ -47,7 +47,7 @@ class TaskController extends AbstractController
     }
 
     #[Route('/task/addtest/{id<\d+>}', methods: ['POST', 'GET'], name: 'app_task_add_test')]
-    public function addTest(int $id, Request $request, TaskRepository $taskRepository, TaskTestRepository $taskTestRepository, ZipManager $zipManager): Response
+    public function addTest(int $id, Request $request, TaskRepository $taskRepository, TaskTestRepository $taskTestRepository, ZipManager $zipManager, LoggerInterface $logger): Response
     {
         // find task with this id
         $task = $taskRepository->find($id);
@@ -97,7 +97,9 @@ class TaskController extends AbstractController
             return $this->redirectToRoute('app_task_list');
         }
 
-        if (($err = $zipManager->isAllFilesCorrect($zip, $input, $output, "/\[id\]/", !empty($output)) !== TRUE)) {
+        $files = $zipManager->isAllFilesCorrect($zip, $input, $output, "/\[id\]/", !empty($output));
+
+        if (!is_array($files)) {
             // $this->addFlash("error", $err);
             return $this->redirectToRoute('app_task_list');
         }
@@ -106,6 +108,15 @@ class TaskController extends AbstractController
 
         // extract files in directory
         $zip->extractTo($testDirectoryName);
+
+        for ($i = 0; $i < count($files['inputFiles']); $i++) {
+            $taskToAdd = new TaskTest();
+            $taskToAdd->setTask($task);
+            $taskToAdd->setInputData($testDirectoryName . '/' . $files['inputFiles'][$i]);
+            $taskToAdd->setOutputData($testDirectoryName . '/' . $files['outputFiles'][$i]);
+            $taskTestRepository->save($taskToAdd, true);
+        }
+
         $zip->close();
         //$zip->extractTo($testDirectoryName);
         //$taskTest->setInputData($testDirectoryName);

@@ -51,9 +51,9 @@ class ZipManager
     * @param string $output Output file name
     * @param string $fileIdintifierPattern Regular expression for file identifier (e.g. `/\[id\]/`);
     *
-    * @return string|bool Error or `TRUE` if there are no errors
+    * @return string|array Error or array of fileNames
     */
-   public function isAllFilesCorrect(ZipArchive $zip, string $input, string $output, string $fileIdintifierPattern, bool $hasOutput = true): string|bool
+   public function isAllFilesCorrect(ZipArchive $zip, string $input, string $output, string $fileIdintifierPattern, bool $hasOutput = true): string|array
    {
 
       if (!$this->isZipOpenned($zip)) {
@@ -67,6 +67,11 @@ class ZipManager
       $inputPattern = '/' . preg_replace($fileIdintifierPattern, "(.+)", $input) . '/';
       $outputPattern = '/' . preg_replace($fileIdintifierPattern, "(.+)", $output) . '/';
 
+      // input and output files
+      $files = [
+         "inputFiles" => [],
+         "outputFiles" => [],
+      ];
 
       // check if all files in archive is valid
       for ($i = 0; $i < $zip->numFiles; $i++) {
@@ -87,14 +92,19 @@ class ZipManager
          }
 
          // check if file has couple
-         $hasCouple = $this->fileHasCouple($zip, $matches[1], $fileIdintifierPattern, $isValidInput ? $output : $input);
-         if ($hasCouple === false) {
+         $couple = $this->fileHasCouple($zip, $matches[1], $fileIdintifierPattern, $isValidInput ? $output : $input);
+         if ($couple['index'] === false) {
             return self::ERR_NO_COUPLE;
             break;
          }
+
+         if ($isValidInput) {
+            $files['inputFiles'][] = $fileName;
+            $files['outputFiles'][] = $couple['fileName'];
+         }
       }
 
-      return true;
+      return $files;
    }
 
    /**
@@ -109,6 +119,9 @@ class ZipManager
    private function fileHasCouple(ZipArchive $zip, string $fileIdintifier, string $fileIdintifierPattern, string $coupleName)
    {
       $coupleFileName = preg_replace($fileIdintifierPattern, $fileIdintifier, $coupleName);
-      return $zip->locateName($coupleFileName);
+      return [
+         "index" => $zip->locateName($coupleFileName),
+         "fileName" => $coupleFileName,
+      ];
    }
 }
