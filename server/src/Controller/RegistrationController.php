@@ -42,8 +42,8 @@ class RegistrationController extends AbstractController
             $user->setCreatedAt(new \DateTimeImmutable());
 
             $userRepository->save($user, true);
-            // do anything else you need here, like send an email
-            return $this->redirectToRoute('app_task_list');
+            
+            return $this->redirectToRoute('app_login');
         }
 
         // render registration form
