@@ -29,20 +29,20 @@ php composer.phar update
 ```
 
 ### Database Migration
-
-1. Create database
-```shell
-php bin/console doctrine:database:create
-```
-2. Make migration to database
-```shell
-php bin/console doctrine:migration:migrate
-```
-3. Connect your database in .env file:
+1. Connect your database in .env file:
 ```ini
 # Example for mysql
 DATABASE_URL="mysql://<user>:<password>@<ip>:<port>/<database>?serverVersion=<db-version>"
 ```
+2. Create database
+```shell
+php bin/console doctrine:database:create
+```
+3. Make migration to database
+```shell
+php bin/console doctrine:migration:migrate
+```
+
 
 ### Start Server
 ```shell
