@@ -33,8 +33,8 @@ Contest directory stores files received from contest.
 tmp directory stores tmp files (e.g. object files)
 
 ## `user` directory
-user directory stores user solved problems
-* `{user_id}` user solved problems by ID
+user directory stores solved problems
+* `{user_id}` — user solved problems by ID
 
 ## `logs` directory
 Logs directory stores log data about contests, platform and other important details.
