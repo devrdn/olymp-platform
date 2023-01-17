@@ -9,8 +9,10 @@
   * contests
     * {contest_id}
       * task\_{task_id}
-   * tmp
-   * logs
+  * user
+    * {user_id}
+  * tmp
+  * logs
 
 ## `data` directory
 Data directory stores static information about tasks, contests, users and other private files.
@@ -29,6 +31,10 @@ Contest directory stores files received from contest.
 
 ## `tmp` directory
 tmp directory stores tmp files (e.g. object files)
+
+## `user` directory
+user directory stores user solved problems
+* `{user_id}` user solved problems by ID
 
 ## `logs` directory
 Logs directory stores log data about contests, platform and other important details.
