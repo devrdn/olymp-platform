@@ -80,6 +80,7 @@ class ZipService
     *
     * @param string $path Path to extract
     * @param bool $close Should the archive be closed after extraction
+    * @throws ZipServiceException
     *
     * @return bool TRUE on success or FALSE on failure
     */
