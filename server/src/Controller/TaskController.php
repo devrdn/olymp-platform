@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\TaskTest;
+use App\Exception\ZipServiceException;
 use App\Form\TaskTestType;
 use App\Repository\TaskRepository;
 use App\Repository\TaskTestRepository;
@@ -82,50 +83,37 @@ class TaskController extends AbstractController
          */
         $taskTest = $taskForm->getData();
         $archive = $taskForm->get('tests')->getData();
-        $input = $taskForm->get('input_pattern')->getData();
-        $output =  $taskForm->get('output_pattern')->getData();
+        $inputPattern = $taskForm->get('input_pattern')->getData();
+        $outputPattern =  $taskForm->get('output_pattern')->getData();
 
         // if has no uploaded tests
-        if (!$archive) {
-            $taskTestRepository->save($taskTest, true);
+        $zipService->openZip($archive);
+
+        try {
+            $zipService->extractFilesIfHasPair($task, $inputPattern, $outputPattern, $this->getParameter('test_directory'), true);
+        } catch (ZipServiceException $e) {
+            # todo: add flash message
             return $this->redirectToRoute('app_task_list');
         }
-
-        // todo: add flash messages and refactor some code with error Messages and service
-        if ($zipService->openZip($archive) !== TRUE) {
-            return $this->redirectToRoute('app_task_list');
-        }
-
-        if (($err = $zipService->isAllFilesHasCouple($input, $output, "/\[id\]/", !empty($output)) !== TRUE)) {
-            // $this->addFlash("error", $err);
-            return $this->redirectToRoute('app_task_list');
-        }
-
-        $testDirectoryPath = $this->getOutputDir($taskTest);
-
-        // extract files in directory
-        $zipService->extractTo($testDirectoryPath, true);
-        //$zip->extractTo($testDirectoryName);
-        //$taskTest->setInputData($testDirectoryName);
 
         return $this->redirectToRoute('app_task_list');
     }
 
-    private function getOutputDir(TaskTest $taskTest): string|Response
-    {
-        $fileSystem = new Filesystem();
-        $outputDir = $this->getParameter('test_directory') . '/' . $taskTest->getTask()->getId() . '/tests';
+    //private function getOutputDir(): string|Response
+    //{
+    //    $fileSystem = new Filesystem();
+    //    //$outputDir = $this->getParameter('test_directory') . '/' . $taskTest->getTask()->getId() . '/tests';
 
-        // create new task directory for tests
-        if (!$fileSystem->exists($outputDir)) {
-            try {
-                $fileSystem->mkdir($outputDir);
-            } catch (IOException) {
-                //$this->addFlash('danger', 'Cannot create test directory');
-                return $this->redirectToRoute('app_task_list');
-            }
-        }
+    //    // create new task directory for tests
+    //    if (!$fileSystem->exists($outputDir)) {
+    //        try {
+    //            $fileSystem->mkdir($outputDir);
+    //        } catch (IOException) {
+    //            //$this->addFlash('danger', 'Cannot create test directory');
+    //            return $this->redirectToRoute('app_task_list');
+    //        }
+    //    }
 
-        return $outputDir;
-    }
+    //    return $outputDir;
+    //}
 }
