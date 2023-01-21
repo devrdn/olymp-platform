@@ -19,14 +19,6 @@ class TaskTestType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('task', EntityType::class, [
-                'label' => 'Task',
-                'attr' => ['class' => 'form-control'],
-                'required' => true,
-                'class' => Task::class,
-                'choice_value' => 'id',
-                'choice_label' => 'name'
-            ])
             ->add('input_pattern', TextType::class, [
                 'label' => 'Input Pattern',
                 'attr' => ['class' => 'form-control'],

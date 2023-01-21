@@ -69,9 +69,11 @@ class TestUploader
     * @param bool    $close         Whether or not the zip archive should be closed after extracting the tests (defaults to true)
     * @param bool    $testHasPairs  Whether or not the input tests have pairs (defaults to true)
     *
+    * @return int Number of uploaded tests
+    *
     * @throws TestUploaderException
     */
-   public function extractTestsIfHasPair(Task $task, string $inputPattern, string $outputPattern, string $path, bool $close = true, bool $testHasPairs = true): void
+   public function extractTestsIfHasPair(Task $task, string $inputPattern, string $outputPattern, string $path, bool $close = true, bool $testHasPairs = true): int
    {
       // get file identifier pattern
       $fileIdentifierPattern = $this->getFileIdentifierPattern();
@@ -114,7 +116,7 @@ class TestUploader
       }
 
       if (count($filesToExtract['input_files']) === 0 && count($filesToExtract['output_files']) === 0) {
-         return;
+         return 0;
       }
 
       $this->extractAndSaveTests($task, $pathToTestFolder, $filesToExtract['input_files'], $filesToExtract['output_files']);
@@ -122,6 +124,8 @@ class TestUploader
       if ($close) {
          $this->zip->close();
       }
+
+      return count($filesToExtract['input_files']) + count($filesToExtract['output_files']);
    }
 
    /** 

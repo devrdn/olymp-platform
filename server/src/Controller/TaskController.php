@@ -53,19 +53,19 @@ class TaskController extends AbstractController
         return $this->render('task/index.html.twig', ['task' => $task]);
     }
 
-  
+
     #[Route('/task/addtest/{id<\d+>}', methods: ['POST', 'GET'], name: 'app_task_add_test')]
     public function addTest(int $id, Request $request, TaskRepository $taskRepository, TestUploader $testUploader): Response
     {
         // find task with this id
         $task = $taskRepository->find($id);
-      
+
         if (!$task) {
             throw $this->createNotFoundException(
                 'Task with ID: ' . $id . ' not found'
             );
         }
-      
+
         $taskTest = new TaskTest();
         $taskTest->setTask($task);
 
@@ -79,14 +79,13 @@ class TaskController extends AbstractController
             return $this->renderForm('task/add_task_form.html.twig', [
                 'task' => $task,
                 'form' => $taskForm,
+                'task' => $task
             ]);
         }
 
         // if form is submitted and valid
 
-        /** 
-         * @var TaskTest $taskTest 
-         */
+        /** @var TaskTest $taskTest */
         $taskTest = $taskForm->getData();
         $archive = $taskForm->get('tests')->getData();
         $inputPattern = $taskForm->get('input_pattern')->getData();
@@ -94,18 +93,19 @@ class TaskController extends AbstractController
 
         // if has no uploaded tests
         $testUploader->openZip($archive);
+        $numberOfUploadedTests = 0;
 
         try {
-            $testUploader->extractTestsIfHasPair($task, $inputPattern, $outputPattern, $this->getParameter('test_directory'));
+            $numberOfUploadedTests = $testUploader->extractTestsIfHasPair($task, $inputPattern, $outputPattern, $this->getParameter('test_directory'));
         } catch (TestUploaderException $exception) {
-            # todo: add flash message
-            # throw new Exception($exception->getMessage());
-            return $this->redirectToRoute('app_task_list');
+            $this->addFlash('success', $exception->getMessage());
+            return $this->redirectToRoute('app_task_add_test', ['id' => $task->getId()]);
         }
 
-        return $this->redirectToRoute('app_task_list');
-    }   
- 
+        $this->addFlash('success', "{$numberOfUploadedTests} tests was uploaded to task '{$task->getName()}'");
+        return $this->redirectToRoute('app_task_add_test', ['id' => $task->getId()]);
+    }
+
 
     #[Route('/task/create', methods: ['GET', 'POST'], name: 'app_task_create')]
     public function createTask(Request $request, TaskRepository $taskRepository, TaskMetaRepository $taskMetaRepository): Response
