@@ -27,3 +27,5 @@ yarn-error.log
 ###< symfony/webpack-encore-bundle ###
 
 .vscode
+
+/data
