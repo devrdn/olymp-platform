@@ -25,3 +25,5 @@
 ###< symfony/phpunit-bridge ###
 
 .vscode
+
+/data
