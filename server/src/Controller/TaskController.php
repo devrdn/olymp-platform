@@ -3,20 +3,18 @@
 namespace App\Controller;
 
 use App\Entity\TaskTest;
-use App\Exception\ZipServiceException;
+use App\Exception\TestUploaderException;
 use App\Form\TaskTestType;
 use App\Repository\TaskRepository;
 use App\Repository\TaskTestRepository;
-use App\Services\ZipManager;
+use App\Services\TestUploader;
 use App\Services\ZipService;
+use Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Filesystem\Exception\IOException;
-use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use ZipArchive;
 
 class TaskController extends AbstractController
 {
@@ -49,7 +47,7 @@ class TaskController extends AbstractController
     }
 
     #[Route('/task/addtest/{id<\d+>}', methods: ['POST', 'GET'], name: 'app_task_add_test')]
-    public function addTest(int $id, Request $request, TaskRepository $taskRepository, TaskTestRepository $taskTestRepository, ZipService $zipService): Response
+    public function addTest(int $id, Request $request, TaskRepository $taskRepository, TestUploader $testUploader): Response
     {
         // find task with this id
         $task = $taskRepository->find($id);
@@ -87,33 +85,16 @@ class TaskController extends AbstractController
         $outputPattern =  $taskForm->get('output_pattern')->getData();
 
         // if has no uploaded tests
-        $zipService->openZip($archive);
+        $testUploader->openZip($archive);
 
         try {
-            $zipService->extractFilesIfHasPair($task, $inputPattern, $outputPattern, $this->getParameter('test_directory'), true);
-        } catch (ZipServiceException $e) {
+            $testUploader->extractTestsIfHasPair($task, $inputPattern, $outputPattern, $this->getParameter('test_directory'));
+        } catch (TestUploaderException $exception) {
             # todo: add flash message
+            throw new Exception($exception->getMessage());
             return $this->redirectToRoute('app_task_list');
         }
 
         return $this->redirectToRoute('app_task_list');
     }
-
-    //private function getOutputDir(): string|Response
-    //{
-    //    $fileSystem = new Filesystem();
-    //    //$outputDir = $this->getParameter('test_directory') . '/' . $taskTest->getTask()->getId() . '/tests';
-
-    //    // create new task directory for tests
-    //    if (!$fileSystem->exists($outputDir)) {
-    //        try {
-    //            $fileSystem->mkdir($outputDir);
-    //        } catch (IOException) {
-    //            //$this->addFlash('danger', 'Cannot create test directory');
-    //            return $this->redirectToRoute('app_task_list');
-    //        }
-    //    }
-
-    //    return $outputDir;
-    //}
 }

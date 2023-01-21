@@ -7,6 +7,6 @@ use Exception;
 /**
  * Triggered when ZipService related errors occur
  */
-class ZipServiceException extends Exception
+class TestUploaderException extends Exception
 {
 }
