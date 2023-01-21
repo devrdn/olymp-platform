@@ -5,7 +5,13 @@
 {% endblock %}
 
 {% block body %}
-	<div class="wrapper">
+	<div
+		class="wrapper">
+		{# Flash Messages #}
+		{% for message in app.flashes('success') %}
+			{% include "_flash.html.twig" with { type: 'success', message: message } %}
+		{% endfor %}
+		{# End Flash Messages #}
 		<div class="task">
 			<div class="task__field task__name">
 				<h1>😃{{ task.name }}</h1>
@@ -26,8 +32,8 @@
 			<div class="task__field task__example">
 				<h3>Example Input and Output</h3><hr>
 				<h7>Example Input:
-					{{ task.exampleInput }}, Example Output:
-					{{ task.exampleOutput }}</h7>
+					{{ task.exampleInput|raw }}Example Output:
+					{{ task.exampleOutput|raw }}</h7>
 			</div>
 
 			<div class="task__field task__example">
@@ -48,6 +54,7 @@
 					| Output:
 					{{ task.outputData }}<br>
 				{% endfor %}
-			</div</div>
+			</div>
 		</div>
+	</div>
 {% endblock %}
