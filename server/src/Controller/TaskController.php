@@ -25,10 +25,10 @@ class TaskController extends AbstractController
 
         return $this->render('task/list.html.twig', [
             'tasks' => $paginator,
-            'previous' => $offset - TaskRepository::PAGINATOR_PER_PAGE,
+            'previous' => $offset - TaskRepository::_TASKS_PER_PAGE,
             'next' => min(
                 count($paginator),
-                $offset + TaskRepository::PAGINATOR_PER_PAGE
+                $offset + TaskRepository::_TASKS_PER_PAGE
             ),
         ]);
     }
