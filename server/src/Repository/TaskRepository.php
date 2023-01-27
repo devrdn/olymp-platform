@@ -17,7 +17,7 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class TaskRepository extends ServiceEntityRepository
 {
-    public const PAGINATOR_PER_PAGE = 10;
+    public const _TASKS_PER_PAGE = 10;
 
     public function __construct(ManagerRegistry $registry)
     {
@@ -45,7 +45,7 @@ class TaskRepository extends ServiceEntityRepository
     public function getTaskPaginator(int $offset)
     {
         $query = $this->createQueryBuilder('c')
-            ->setMaxResults(self::PAGINATOR_PER_PAGE)
+            ->setMaxResults(self::_TASKS_PER_PAGE)
             ->setFirstResult($offset)
             ->getQuery();
 
