@@ -1,0 +1,29 @@
+<div id="upload-solution">
+	<h3>Upload Solution</h3>
+	<hr/>
+	{% if not app.user %}
+		<div class="bg-light p-3 rounded">
+			<p class="m-0">
+				<a class="m-0 fs-6 text-primary" href="{{ path('app_login') }}">Log In</a>, in order to upload the solution
+			</p>
+		</div>
+	{% else %}
+		{{ form_start(form) }}
+		<div class="form-group">
+			{{ form_label(form.language) }}
+			{{ form_widget(form.language) }}
+			<span>
+				{{ form_errors(form.language) }}
+			</span>
+		</div>
+		<div class="form-group">
+			{{ form_label(form.file_solution) }}
+			{{ form_widget(form.file_solution) }}
+			<span>
+				{{ form_errors(form.file_solution) }}
+			</span>
+		</div>
+		{{ form_end(form) }}
+	{% endif %}
+
+</div>

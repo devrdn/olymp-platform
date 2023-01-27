@@ -24,7 +24,7 @@
 				<ul>
 					{% for task in tasks %}
 						<li>
-							<a href="{{ path('app_task_single', { id: task.id }) }}">{{ task.name }}</a>
+							<a href="{{ path('app_task_single_page', { id: task.id }) }}">{{ task.name }}</a>
 						</li>
 					{% else %}
 						<div>Задания найдены не были</div>

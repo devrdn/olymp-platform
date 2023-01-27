@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Task;
 use App\Entity\TaskMeta;
 use App\Form\TaskType;
+use App\Form\UploadSolutionType;
 use App\Repository\TaskMetaRepository;
 use App\Repository\TaskRepository;
 use DateTimeImmutable;
@@ -33,8 +34,8 @@ class TaskController extends AbstractController
         ]);
     }
 
-    #[Route('/task/view/{id<\d+>}', methods: ['GET'], name: 'app_task_single_page')]
-    public function showTask(int $id,  TaskRepository $taskRepository): Response
+    #[Route('/task/view/{id<\d+>}', methods: ['GET', 'POST'], name: 'app_task_single_page')]
+    public function showTask(int $id,  Request $request, TaskRepository $taskRepository): Response
     {
         $task = $taskRepository->find($id);
 
@@ -44,7 +45,14 @@ class TaskController extends AbstractController
             );
         }
 
-        return $this->render('task/index.html.twig', ['task' => $task]);
+        $uploadSolutionForm = $this->createForm(UploadSolutionType::class);
+        $uploadSolutionForm->handleRequest($request);
+
+
+        return $this->renderForm('task/index.html.twig', [
+            'task' => $task,
+            'form' => $uploadSolutionForm,
+        ]);
     }
 
     #[Route('/task/create', methods: ['GET', 'POST'], name: 'app_task_create')]
