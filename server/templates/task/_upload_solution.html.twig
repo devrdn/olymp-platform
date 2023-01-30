@@ -1,7 +1,7 @@
 <div id="upload-solution">
 	<h3>Upload Solution</h3>
 	<hr/>
-	{% if not app.user %}
+	{% if not is_granted('IS_AUTHENTICATED_FULLY') %}
 		<div class="bg-light p-3 rounded">
 			<p class="m-0">
 				<a class="m-0 fs-6 text-primary" href="{{ path('app_login') }}">Log In</a>, in order to upload the solution
@@ -23,7 +23,31 @@
 				{{ form_errors(form.file_solution) }}
 			</span>
 		</div>
+		<div>
+			{{ form_errors(form) }}
+		</div>
 		{{ form_end(form) }}
 	{% endif %}
-
 </div>
+
+{% block script %}
+	<script src="https://cdn.ckeditor.com/ckeditor5/35.4.0/classic/ckeditor.js"></script>
+	<script src="/utils/ckeditor.js"></script>
+	<script>
+		const extraConfig = {
+toolbar: [
+'heading', '|'
+],
+heading: {
+options: [
+{
+model: 'paragraph',
+title: 'Paragraph',
+class: 'ck-heading_paragraph'
+},
+]
+}
+};
+ckEditor(document.querySelector("#upload_solution_text_solution"), extraConfig);
+	</script>
+{% endblock %}

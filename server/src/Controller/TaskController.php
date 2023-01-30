@@ -4,17 +4,24 @@ namespace App\Controller;
 
 use App\Entity\Task;
 use App\Entity\TaskMeta;
+use App\Entity\User;
+use App\Exception\FileUploaderException;
 use App\Form\TaskType;
 use App\Form\UploadSolutionType;
 use App\Repository\TaskMetaRepository;
 use App\Repository\TaskRepository;
+use App\Services\FileUploader;
+use App\Services\TextFormatter;
 use DateTimeImmutable;
+use Exception;
 use Psr\Log\LoggerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
 class TaskController extends AbstractController
 {
@@ -35,7 +42,7 @@ class TaskController extends AbstractController
     }
 
     #[Route('/task/view/{id<\d+>}', methods: ['GET', 'POST'], name: 'app_task_single_page')]
-    public function showTask(int $id,  Request $request, TaskRepository $taskRepository): Response
+    public function showTask(int $id,  Request $request, TaskRepository $taskRepository, FileUploader $fileUploader, TextFormatter $textFormatter): Response
     {
         $task = $taskRepository->find($id);
 
@@ -48,11 +55,75 @@ class TaskController extends AbstractController
         $uploadSolutionForm = $this->createForm(UploadSolutionType::class);
         $uploadSolutionForm->handleRequest($request);
 
+        if (!($uploadSolutionForm->isSubmitted()  && $uploadSolutionForm->isValid())) {
+            return $this->renderForm('task/index.html.twig', [
+                'task' => $task,
+                'form' => $uploadSolutionForm,
+            ]);
+        }
 
-        return $this->renderForm('task/index.html.twig', [
-            'task' => $task,
-            'form' => $uploadSolutionForm,
-        ]);
+        // if form is submitted and valid
+        // todo: make as entity
+        // todo: maybe another method
+
+        /** @var User $user */
+        $user = $this->getUser();
+        $solutionExtesion = $uploadSolutionForm->get('language')->getData();
+
+        /** @var UploadedFile $uploadedSolutionAsFile */
+        $uploadedSolutionAsFile = $uploadSolutionForm->get('file_solution')->getData();
+        $uploadedSolutionAsText = $uploadSolutionForm->get('text_solution')->getData();
+
+        $fileUploader->setTargetDirectory($this->getParameter('user_directory') . '/' . $user->getId());
+
+        // Handle File User Solution
+        // todo: service
+        if ($uploadedSolutionAsFile) {
+            // check if user file extension matches selected extension
+            $fileExtension = $uploadedSolutionAsFile->getClientOriginalExtension();
+            if ($fileExtension !== $solutionExtesion->value) {
+                $this->addFlash('warning', "Your file extension doesn't match selected extension");
+                return $this->redirectToRoute('app_task_single_page', ['id' => $id]);
+            }
+
+            // create new file name task_{task_id}_{data}.{ext}
+            $newFileName = FileUploader::createFileUniqueNameByDate("task", $task->getId(), $fileExtension);
+
+            // upload user solution to folder
+            try {
+                $fileUploader->uploadFile($uploadedSolutionAsFile, $newFileName);
+            } catch (FileUploaderException $exception) {
+                $this->addFlash('error', $exception->getMessage());
+                return $this->redirectToRoute('app_task_single_page', ['id' => $id]);
+            }
+
+            // add flash message and redirect  if solution is succefully uploaded
+            $this->addFlash('success', 'Solution is succefully uploaded as File');
+            return $this->redirectToRoute('app_task_single_page', ['id' => $id]);
+        }
+
+        // Handle Text User Solution
+        if ($uploadedSolutionAsText) {
+            // create new file name task_{task_id}_{data}.{ext}
+            $newFileName = FileUploader::createFileUniqueNameByDate("task", $task->getId(), $solutionExtesion->value);
+
+            // create from html raw text
+            $rawText = $textFormatter->fromHtmlToText($uploadedSolutionAsText);
+
+            // upload user solution to folder
+            try {
+                $fileUploader->createAndUploadFile($rawText, $newFileName);
+            } catch (FileUploaderException $exception) {
+                $this->addFlash('error', $exception->getMessage());
+                return $this->redirectToRoute('app_task_single_page', ['id' => $id]);
+            }
+
+            // add flash message and redirect if solution is succefully uploaded
+            $this->addFlash('success', 'Solution is succefully uploaded as File');
+            return $this->redirectToRoute('app_task_single_page', ['id' => $id]);
+        }
+
+        return $this->redirectToRoute('app_task_single_page', ['id' => $id]);
     }
 
     #[Route('/task/create', methods: ['GET', 'POST'], name: 'app_task_create')]
@@ -91,7 +162,7 @@ class TaskController extends AbstractController
     }
 
     #[Route('/task/update/{id<\d{1,5}>}', methods: ['GET', 'POST'], name: 'app_task_update')]
-    public function updateTask(int $id, Request $request, TaskRepository $taskRepository, LoggerInterface $logg): Response
+    public function updateTask(int $id, Request $request, TaskRepository $taskRepository): Response
     {
         $task = $taskRepository->find($id);
 

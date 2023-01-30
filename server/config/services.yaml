@@ -3,7 +3,10 @@
 
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
+
+# todo: maybe to relative path
 parameters:
+    'user_directory': '%kernel.project_dir%/../data/user'
 
 services:
     # default configuration for services in *this* file
@@ -18,6 +21,7 @@ services:
         exclude:
             - '../src/DependencyInjection/'
             - '../src/Entity/'
+            - '../src/EventSubscriber/'
             - '../src/Kernel.php'
 
     # add more service definitions when explicit configuration is needed

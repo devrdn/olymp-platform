@@ -2,7 +2,8 @@
 
 namespace App\Form;
 
-use App\Config\AllowedExtesion;
+use App\Config\AllowedExtesions;
+use App\EventSubscriber\OnlyOneFieldFilledSubscriber;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EnumType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
@@ -10,7 +11,6 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints\Expression;
 
 class UploadSolutionType extends AbstractType
 {
@@ -19,7 +19,7 @@ class UploadSolutionType extends AbstractType
         $builder
             ->add('language', EnumType::class, [
                 'label' => "Programming Language",
-                'class' => AllowedExtesion::class,
+                'class' => AllowedExtesions::class,
             ])
             ->add('file_solution', FileType::class, [
                 'attr' => ['class' => 'form-control'],
@@ -30,12 +30,15 @@ class UploadSolutionType extends AbstractType
                 'required' => false
             ])
             ->add('save', SubmitType::class);
+
+        $builder->addEventSubscriber(new OnlyOneFieldFilledSubscriber([
+            'file_solution',
+            'text_solution'
+        ]));
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setDefaults([
-            // Configure your form options here
-        ]);
+        $resolver->setDefaults([]);
     }
 }
