@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\ContestRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -28,6 +30,14 @@ class Contest
 
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
+
+    #[ORM\OneToMany(mappedBy: 'contest', targetEntity: ContestTask::class)]
+    private Collection $contestTasks;
+
+    public function __construct()
+    {
+        $this->contestTasks = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -90,6 +100,36 @@ class Contest
     public function setCreatedAt(\DateTimeImmutable $createdAt): self
     {
         $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ContestTask>
+     */
+    public function getContestTasks(): Collection
+    {
+        return $this->contestTasks;
+    }
+
+    public function addContestTask(ContestTask $contestTask): self
+    {
+        if (!$this->contestTasks->contains($contestTask)) {
+            $this->contestTasks->add($contestTask);
+            $contestTask->setContest($this);
+        }
+
+        return $this;
+    }
+
+    public function removeContestTask(ContestTask $contestTask): self
+    {
+        if ($this->contestTasks->removeElement($contestTask)) {
+            // set the owning side to null (unless already changed)
+            if ($contestTask->getContest() === $this) {
+                $contestTask->setContest(null);
+            }
+        }
 
         return $this;
     }
