@@ -11,7 +11,6 @@ use App\Form\UploadSolutionType;
 use App\Repository\TaskMetaRepository;
 use App\Repository\TaskRepository;
 use App\Services\FileUploader;
-use App\Services\TextFormatter;
 use DateTimeImmutable;
 use Exception;
 use Psr\Log\LoggerInterface;
@@ -41,8 +40,9 @@ class TaskController extends AbstractController
         ]);
     }
 
-    #[Route('/task/view/{id<\d+>}', methods: ['GET', 'POST'], name: 'app_task_single_page')]
-    public function showTask(int $id,  Request $request, TaskRepository $taskRepository, FileUploader $fileUploader, TextFormatter $textFormatter): Response
+
+    #[Route('/task/view/{id<\d+>}', methods: ['GET'], name: 'app_task_single_page')]
+    public function showTask(int $id,  Request $request, TaskRepository $taskRepository, FileUploader $fileUploader): Response
     {
         $task = $taskRepository->find($id);
 
@@ -53,13 +53,23 @@ class TaskController extends AbstractController
         }
 
         $uploadSolutionForm = $this->createForm(UploadSolutionType::class);
+
         $uploadSolutionForm->handleRequest($request);
 
-        if (!($uploadSolutionForm->isSubmitted()  && $uploadSolutionForm->isValid())) {
-            return $this->renderForm('task/index.html.twig', [
-                'task' => $task,
-                'form' => $uploadSolutionForm,
-            ]);
+        return $this->renderForm('task/index.html.twig', [
+            'task' => $task,
+            'form' => $uploadSolutionForm,
+        ]);
+    }
+
+    #[Route('/task/upload/{id<\d+>}', methods: ['POST'], name: 'app_task_upload')]
+    public function uploadTask(int $id, Request $request, FileUploader $fileUploader)
+    {
+        $uploadSolutionForm = $this->createForm(UploadSolutionType::class);
+        $uploadSolutionForm->handleRequest($request);
+
+        if (!($uploadSolutionForm->isSubmitted() && $uploadSolutionForm->isValid())) {
+            return $this->redirectToRoute('app_task_single_page', ['id' => $id]);
         }
 
         // if form is submitted and valid
@@ -87,7 +97,7 @@ class TaskController extends AbstractController
             }
 
             // create new file name task_{task_id}_{data}.{ext}
-            $newFileName = FileUploader::createFileUniqueNameByDate("task", $task->getId(), $fileExtension);
+            $newFileName = FileUploader::createFileUniqueNameByDate("task", $id, $fileExtension);
 
             // upload user solution to folder
             try {
@@ -98,33 +108,31 @@ class TaskController extends AbstractController
             }
 
             // add flash message and redirect  if solution is succefully uploaded
-            $this->addFlash('success', 'Solution is succefully uploaded as File');
+            $this->addFlash('success', 'Solution is succefully uploaded');
             return $this->redirectToRoute('app_task_single_page', ['id' => $id]);
         }
 
         // Handle Text User Solution
         if ($uploadedSolutionAsText) {
             // create new file name task_{task_id}_{data}.{ext}
-            $newFileName = FileUploader::createFileUniqueNameByDate("task", $task->getId(), $solutionExtesion->value);
-
-            // create from html raw text
-            $rawText = $textFormatter->fromHtmlToText($uploadedSolutionAsText);
+            $newFileName = FileUploader::createFileUniqueNameByDate("task", $id, $solutionExtesion->value);
 
             // upload user solution to folder
             try {
-                $fileUploader->createAndUploadFile($rawText, $newFileName);
+                $fileUploader->createAndUploadFile($uploadedSolutionAsText, $newFileName);
             } catch (FileUploaderException $exception) {
                 $this->addFlash('error', $exception->getMessage());
                 return $this->redirectToRoute('app_task_single_page', ['id' => $id]);
             }
 
             // add flash message and redirect if solution is succefully uploaded
-            $this->addFlash('success', 'Solution is succefully uploaded as File');
+            $this->addFlash('success', 'Solution is succefully uploaded');
             return $this->redirectToRoute('app_task_single_page', ['id' => $id]);
         }
 
         return $this->redirectToRoute('app_task_single_page', ['id' => $id]);
     }
+
 
     #[Route('/task/create', methods: ['GET', 'POST'], name: 'app_task_create')]
     public function createTask(Request $request, TaskRepository $taskRepository, TaskMetaRepository $taskMetaRepository): Response
