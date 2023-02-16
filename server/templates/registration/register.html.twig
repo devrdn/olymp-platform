@@ -17,10 +17,15 @@
 		</div>
 
 		<div class="form-group">
-			{{ form_label(registrationForm.plainPassword) }}
-			{{ form_widget(registrationForm.plainPassword) }}
+			{{ form_label(registrationForm.plainPassword.first) }}
+			{{ form_widget(registrationForm.plainPassword.first) }}
+		</div>
+
+		<div class="form-group">
+			{{ form_label(registrationForm.plainPassword.second) }}
+			{{ form_widget(registrationForm.plainPassword.second) }}
 			<span>
-				{{ form_errors(registrationForm.plainPassword) }}
+				{{ form_errors(registrationForm.plainPassword.first) }}
 			</span>
 		</div>
 
@@ -40,7 +45,7 @@
 			</span>
 		</div>
 
-		<button type="submit" class="btn">Register</button>
+		<button type="submit" class="btn btn-primary">Register</button>
 		{{ form_end(registrationForm) }}
 	</div>
 {% endblock %}
