@@ -54,8 +54,6 @@ class TaskController extends AbstractController
 
         $uploadSolutionForm = $this->createForm(UploadSolutionType::class);
 
-        $uploadSolutionForm->handleRequest($request);
-
         return $this->renderForm('task/index.html.twig', [
             'task' => $task,
             'form' => $uploadSolutionForm,
