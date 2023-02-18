@@ -9,52 +9,48 @@
 		</div>
 	{% else %}
 		{{ form_start(form, {'action': path('app_solution_upload', { id: task.id }), 'method': 'POST'}) }}
-		<div class="form-group">
-			{{ form_label(form.language) }}
-			{{ form_widget(form.language) }}
-			<span>
-				{{ form_errors(form.language) }}
-			</span>
-		</div>
-		<div class="form-group">
-			{{ form_label(form.file_solution) }}
-			{{ form_widget(form.file_solution) }}
-			<span>
-				{{ form_errors(form.file_solution) }}
-			</span>
-		</div>
-		<div class="form-group">
-			{{ form_label(form.text_solution) }}
-			{{ form_widget(form.text_solution) }}
-			<span>
-				{{ form_errors(form.text_solution) }}
-			</span>
-		</div>
-		<div>
+		<div class="tabs">
+			<div class="tabs-trigger">
+				<a class="tabs-trigger__item active-trigger" href="#file-solution">File Solution</a>
+				<a class="tabs-trigger__item" href="#text-solution">Text Solution</a>
+			</div>
+			<div class="tabs-content">
+				<div id="file-solution" class="tabs-content__item active-tab">
+					<div class="form-group">
+						{{ form_widget(form.file_solution) }}
+						<span>
+							{{ form_errors(form.file_solution) }}
+						</span>
+					</div>
+				</div>
+				<div id="text-solution" class="tabs-content__item">
+					<div class="form-group">
+						{{ form_label(form.language) }}
+						{{ form_widget(form.language) }}
+						<span>
+							{{ form_errors(form.language) }}
+						</span>
+					</div>
+					<div class="form-group">
+						{{ form_label(form.text_solution) }}
+						{{ form_widget(form.text_solution) }}
+						<span>
+							{{ form_errors(form.text_solution) }}
+						</span>
+					</div>
+				</div>
+			</div>
+			<div class="form-group">
+				{{ form_widget(form.save) }}
+			</div>
 			{{ form_errors(form) }}
+			</div>
+			{{ form_row(form._token) }}
 		</div>
 		{{ form_end(form) }}
 	{% endif %}
 </div>
 
 {% block script %}
-	<script src="https://cdn.ckeditor.com/ckeditor5/35.4.0/classic/ckeditor.js"></script>
-	<script src="/utils/ckeditor.js"></script>
-	<script>
-		const extraConfig = {
-			toolbar: [
-				'heading', '|'
-			],
-			heading: {
-				options: [
-					{
-						model: 'paragraph',
-						title: 'Paragraph',
-						class: 'ck-heading_paragraph'
-					},
-				]
-			}
-		};
-		//ckEditor(document.querySelector("#upload_solution_text_solution"), extraConfig);
-	</script>
+	{{ encore_entry_script_tags('tabs') }}
 {% endblock %}
