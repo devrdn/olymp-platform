@@ -11,6 +11,7 @@ use App\Form\UploadSolutionType;
 use App\Repository\TaskMetaRepository;
 use App\Repository\TaskRepository;
 use App\Services\FileUploader;
+use App\Services\SolutionUploader;
 use DateTimeImmutable;
 use Exception;
 use Psr\Log\LoggerInterface;
@@ -61,7 +62,7 @@ class TaskController extends AbstractController
     }
 
     #[Route('/task/upload/{id<\d+>}', methods: ['POST'], name: 'app_solution_upload')]
-    public function uploadTask(int $id, Request $request, FileUploader $fileUploader)
+    public function uploadSolution(int $id, Request $request, SolutionUploader $solutionUploader)
     {
         $uploadSolutionForm = $this->createForm(UploadSolutionType::class);
         $uploadSolutionForm->handleRequest($request);
@@ -72,7 +73,6 @@ class TaskController extends AbstractController
 
         // if form is submitted and valid
         // todo: make as entity
-        // todo: maybe another method
 
         /** @var User $user */
         $user = $this->getUser();
@@ -80,50 +80,28 @@ class TaskController extends AbstractController
         /** @var UploadedFile $uploadedSolutionAsFile */
         $uploadedSolutionAsFile = $uploadSolutionForm->get('file_solution')->getData();
         $uploadedSolutionAsText = $uploadSolutionForm->get('text_solution')->getData();
+        $solutionExtesion = $uploadSolutionForm->get('language')->getData();
 
-        $fileUploader->setTargetDirectory($this->getParameter('user_directory') . '/' . $user->getId());
+        // generate target directory
+        $targetDirectory = $this->getParameter('user_directory') . '/' . $user->getId();
 
-        // Handle File User Solution
-        if ($uploadedSolutionAsFile) {
-            // check if user file extension matches selected extension
-            $fileExtension = $uploadedSolutionAsFile->getClientOriginalExtension();
-
-            // create new file name task_{task_id}_{data}.{ext}
-            $newFileName = FileUploader::createFileUniqueNameByDate("task", $id, $fileExtension);
-
-            // upload user solution to folder
-            try {
-                $fileUploader->uploadFile($uploadedSolutionAsFile, $newFileName);
-            } catch (FileUploaderException $exception) {
-                $this->addFlash('error', $exception->getMessage());
-                return $this->redirectToRoute('app_task_single_page', ['id' => $id]);
+        // Upload user solution
+        try {
+            // Handle File User Solution
+            if ($uploadedSolutionAsFile) {
+                $solutionUploader->uploadSolutionAsFile($uploadedSolutionAsFile, $id, $targetDirectory);
             }
 
-            // add flash message and redirect  if solution is succefully uploaded
-            $this->addFlash('success', 'Solution is succefully uploaded');
+            // Handle Text User Solution 
+            else if ($uploadedSolutionAsText) {
+                $solutionUploader->uploadSolutionAsText($uploadedSolutionAsText, $id, $targetDirectory, $solutionExtesion);
+            }
+        } catch (FileUploaderException $exception) {
+            $this->addFlash('error', $exception->getMessage());
             return $this->redirectToRoute('app_task_single_page', ['id' => $id]);
         }
 
-        // Handle Text User Solution
-        if ($uploadedSolutionAsText) {
-            $solutionExtesion = $uploadSolutionForm->get('language')->getData();
-
-            // create new file name task_{task_id}_{data}.{ext}
-            $newFileName = FileUploader::createFileUniqueNameByDate("task", $id, $solutionExtesion->value);
-
-            // upload user solution to folder
-            try {
-                $fileUploader->createAndUploadFile($uploadedSolutionAsText, $newFileName);
-            } catch (FileUploaderException $exception) {
-                $this->addFlash('error', $exception->getMessage());
-                return $this->redirectToRoute('app_task_single_page', ['id' => $id]);
-            }
-
-            // add flash message and redirect if solution is succefully uploaded
-            $this->addFlash('success', 'Solution is succefully uploaded');
-            return $this->redirectToRoute('app_task_single_page', ['id' => $id]);
-        }
-
+        $this->addFlash('success', 'Solution is succefully uploaded');
         return $this->redirectToRoute('app_task_single_page', ['id' => $id]);
     }
 
