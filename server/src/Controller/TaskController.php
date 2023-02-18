@@ -42,7 +42,7 @@ class TaskController extends AbstractController
 
 
     #[Route('/task/view/{id<\d+>}', methods: ['GET'], name: 'app_task_single_page')]
-    public function showTask(int $id,  Request $request, TaskRepository $taskRepository, FileUploader $fileUploader): Response
+    public function showTask(int $id, TaskRepository $taskRepository): Response
     {
         $task = $taskRepository->find($id);
 
@@ -60,7 +60,7 @@ class TaskController extends AbstractController
         ]);
     }
 
-    #[Route('/task/upload/{id<\d+>}', methods: ['POST'], name: 'app_task_upload')]
+    #[Route('/task/upload/{id<\d+>}', methods: ['POST'], name: 'app_solution_upload')]
     public function uploadTask(int $id, Request $request, FileUploader $fileUploader)
     {
         $uploadSolutionForm = $this->createForm(UploadSolutionType::class);
@@ -76,7 +76,6 @@ class TaskController extends AbstractController
 
         /** @var User $user */
         $user = $this->getUser();
-        $solutionExtesion = $uploadSolutionForm->get('language')->getData();
 
         /** @var UploadedFile $uploadedSolutionAsFile */
         $uploadedSolutionAsFile = $uploadSolutionForm->get('file_solution')->getData();
@@ -85,14 +84,9 @@ class TaskController extends AbstractController
         $fileUploader->setTargetDirectory($this->getParameter('user_directory') . '/' . $user->getId());
 
         // Handle File User Solution
-        // todo: service
         if ($uploadedSolutionAsFile) {
             // check if user file extension matches selected extension
             $fileExtension = $uploadedSolutionAsFile->getClientOriginalExtension();
-            if ($fileExtension !== $solutionExtesion->value) {
-                $this->addFlash('warning', "Your file extension doesn't match selected extension");
-                return $this->redirectToRoute('app_task_single_page', ['id' => $id]);
-            }
 
             // create new file name task_{task_id}_{data}.{ext}
             $newFileName = FileUploader::createFileUniqueNameByDate("task", $id, $fileExtension);
@@ -112,6 +106,8 @@ class TaskController extends AbstractController
 
         // Handle Text User Solution
         if ($uploadedSolutionAsText) {
+            $solutionExtesion = $uploadSolutionForm->get('language')->getData();
+
             // create new file name task_{task_id}_{data}.{ext}
             $newFileName = FileUploader::createFileUniqueNameByDate("task", $id, $solutionExtesion->value);
 

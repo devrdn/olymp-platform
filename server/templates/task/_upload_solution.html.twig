@@ -8,7 +8,7 @@
 			</p>
 		</div>
 	{% else %}
-		{{ form_start(form, {'action': path('app_task_upload', { id: task.id }), 'method': 'POST'}) }}
+		{{ form_start(form, {'action': path('app_solution_upload', { id: task.id }), 'method': 'POST'}) }}
 		<div class="form-group">
 			{{ form_label(form.language) }}
 			{{ form_widget(form.language) }}
