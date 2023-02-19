@@ -5,11 +5,13 @@ namespace App\Controller;
 use App\Entity\Task;
 use App\Entity\TaskMeta;
 use App\Entity\User;
+use App\Entity\UserSolution;
 use App\Exception\FileUploaderException;
 use App\Form\TaskType;
 use App\Form\UploadSolutionType;
 use App\Repository\TaskMetaRepository;
 use App\Repository\TaskRepository;
+use App\Repository\UserSolutionRepository;
 use App\Services\FileUploader;
 use App\Services\SolutionUploader;
 use DateTimeImmutable;
@@ -62,17 +64,21 @@ class TaskController extends AbstractController
     }
 
     #[Route('/task/upload/{id<\d+>}', methods: ['POST'], name: 'app_solution_upload')]
-    public function uploadSolution(int $id, Request $request, SolutionUploader $solutionUploader)
+    public function uploadSolution(int $id, Request $request, SolutionUploader $solutionUploader, TaskRepository $taskRepository, UserSolutionRepository $userSolutionRepository)
     {
+        $task = $taskRepository->find($id);
+        if (!$task) {
+            throw $this->createNotFoundException(
+                'Task with ID: ' . $id . ' not found'
+            );
+        }
+
         $uploadSolutionForm = $this->createForm(UploadSolutionType::class);
         $uploadSolutionForm->handleRequest($request);
 
         if (!($uploadSolutionForm->isSubmitted() && $uploadSolutionForm->isValid())) {
             return $this->redirectToRoute('app_task_single_page', ['id' => $id]);
         }
-
-        // if form is submitted and valid
-        // todo: make as entity
 
         /** @var User $user */
         $user = $this->getUser();
@@ -84,23 +90,28 @@ class TaskController extends AbstractController
 
         // generate target directory
         $targetDirectory = $this->getParameter('user_directory') . '/' . $user->getId();
+        $fileName = '';
 
         // Upload user solution
         try {
             // Handle File User Solution
             if ($uploadedSolutionAsFile) {
-                $solutionUploader->uploadSolutionAsFile($uploadedSolutionAsFile, $id, $targetDirectory);
+                $fileName = $solutionUploader->uploadSolutionAsFile($uploadedSolutionAsFile, $id, $targetDirectory);
             }
 
             // Handle Text User Solution 
             else if ($uploadedSolutionAsText) {
-                $solutionUploader->uploadSolutionAsText($uploadedSolutionAsText, $id, $targetDirectory, $solutionExtesion);
+                $fileName = $solutionUploader->uploadSolutionAsText($uploadedSolutionAsText, $id, $targetDirectory, $solutionExtesion);
             }
         } catch (FileUploaderException $exception) {
             $this->addFlash('error', $exception->getMessage());
             return $this->redirectToRoute('app_task_single_page', ['id' => $id]);
         }
 
+        // Save to DataBase
+        $userSolution = new UserSolution($user, $task, $fileName);
+        $userSolutionRepository->save($userSolution, true);
+        
         $this->addFlash('success', 'Solution is succefully uploaded');
         return $this->redirectToRoute('app_task_single_page', ['id' => $id]);
     }

@@ -28,9 +28,9 @@ class FileUploader
     */
    private Filesystem $fileSystem;
 
-   public function __construct(Filesystem $fileSystem)
+   public function __construct()
    {
-      $this->fileSystem = $fileSystem;
+      $this->fileSystem = new Filesystem;
    }
 
    /**

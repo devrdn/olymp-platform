@@ -3,6 +3,10 @@
 namespace App\Services;
 
 use App\Config\AllowedExtesions;
+use App\Entity\Task;
+use App\Entity\User;
+use App\Entity\UserSolution;
+use App\Repository\UserSolutionRepository;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
@@ -12,8 +16,14 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
  *    1. As File
  *    2. As Text
  */
-class SolutionUploader extends FileUploader 
+class SolutionUploader extends FileUploader
 {
+   public function __construct(
+      private UserSolutionRepository $userSolutionRepository
+   ) {
+      parent::__construct();
+   }
+
    /**
     * Upload User solution as File
     *
@@ -21,9 +31,10 @@ class SolutionUploader extends FileUploader
     * @param string $solutionId
     * @param string $targetDirectory
     *
-    * @return void
+    * @return string solution file name
     */
-   public function uploadSolutionAsFile(UploadedFile $uploadedFile, string $solutionId,  string $targetDirectory): void {
+   public function uploadSolutionAsFile(UploadedFile $uploadedFile, string $solutionId,  string $targetDirectory): string
+   {
       $this->setTargetDirectory($targetDirectory);
 
       // check if user file extension matches selected extension
@@ -35,7 +46,7 @@ class SolutionUploader extends FileUploader
       // upload user solution to `data` folder
       $this->uploadFile($uploadedFile, $newFileName);
 
-      return;
+      return $newFileName;
    }
 
    /**
@@ -46,18 +57,18 @@ class SolutionUploader extends FileUploader
     * @param string $targetDirectory
     * @param AllowedExtesions $solutionExtesion
     *
-    * @return void
+    * @return string solution file name
     */
-   public function uploadSolutionAsText(string $solutionAsText, string $solutionId, string $targetDirectory, AllowedExtesions $solutionExtesion)
+   public function uploadSolutionAsText(string $solutionAsText, string $solutionId, string $targetDirectory, AllowedExtesions $solutionExtesion): string
    {
       $this->setTargetDirectory($targetDirectory);
 
       // create new file name task_{task_id}_{data}.{ext}
       $newFileName = self::createFileUniqueNameByDate("task", $solutionId, $solutionExtesion->value);
-      
+
       // create file from text and upload solution
       $this->createAndUploadFile($solutionAsText, $newFileName);
 
-      return;
+      return $newFileName;
    }
 }
