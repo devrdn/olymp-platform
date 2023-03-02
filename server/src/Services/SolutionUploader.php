@@ -41,7 +41,7 @@ class SolutionUploader extends FileUploader
       $fileExtension = $uploadedFile->getClientOriginalExtension();
 
       // create new file name task_{task_id}_{data}.{ext}
-      $newFileName = self::createFileUniqueNameByDate("task", $solutionId, $fileExtension);
+      $newFileName = self::createFileName("task", $solutionId, $fileExtension);
 
       // upload user solution to `data` folder
       $this->uploadFile($uploadedFile, $newFileName);
@@ -64,7 +64,7 @@ class SolutionUploader extends FileUploader
       $this->setTargetDirectory($targetDirectory);
 
       // create new file name task_{task_id}_{data}.{ext}
-      $newFileName = self::createFileUniqueNameByDate("task", $solutionId, $solutionExtesion->value);
+      $newFileName = self::createFileName("task", $solutionId, $solutionExtesion->value);
 
       // create file from text and upload solution
       $this->createAndUploadFile($solutionAsText, $newFileName);

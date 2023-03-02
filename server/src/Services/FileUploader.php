@@ -138,7 +138,7 @@ class FileUploader
     *
     * @return string File Unique Name
     */
-   public static function createFileUniqueNameByDate(string $filePrefix, string $uniqueIdentifier = '', string $fileExtension = ''): string
+   public static function createFileName(string $filePrefix, string $uniqueIdentifier = '', string $fileExtension = ''): string
    {
       return $filePrefix . '_' . $uniqueIdentifier . '_' . date('Y-m-d_H-i-s') . '.' . $fileExtension;
    }
