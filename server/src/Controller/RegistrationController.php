@@ -19,7 +19,6 @@ use Symfony\Component\Routing\Annotation\Route;
 class RegistrationController extends AbstractController
 {
     // todo: add email verify and user ip 
-
     #[Route('/register', name: 'app_register', methods: ["POST", "GET"])]
     public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, UserRepository $userRepository): Response
     {
