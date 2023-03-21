@@ -23,6 +23,9 @@ class UserSolution
 
     #[ORM\Column(length: 255)]
     private ?string $filename = null;
+
+    #[ORM\Column]
+    private ?int $status = null;
     
     public function __construct(User $user, Task $task, string $filename)
     {
@@ -68,6 +71,18 @@ class UserSolution
     public function setFilename(string $filename): self
     {
         $this->filename = $filename;
+
+        return $this;
+    }
+
+    public function getStatus(): ?int
+    {
+        return $this->status;
+    }
+
+    public function setStatus(int $status): self
+    {
+        $this->status = $status;
 
         return $this;
     }
