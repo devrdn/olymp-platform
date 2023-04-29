@@ -1,0 +1,63 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+	Form
+{% endblock %}
+
+{% block body %}
+	<div
+		class="wrapper">
+
+		{# Flash Messages #}
+		{% for message in app.flashes('success') %}
+			{% include "_flash.html.twig" with { type: 'success', message: message } %}
+		{% endfor %}
+
+		{% for message in app.flashes('error') %}
+			{% include "_flash.html.twig" with { type: 'danger', message: message } %}
+		{% endfor %}
+		{# End Flash Messages #}
+
+		<div class="name">
+			<p class="h1">Upload Test to task `{{ task.name }}`</p>
+		</div>
+
+		{{ form_start(form) }}
+
+		<div class="form-group">
+			{{ form_label(form.input_pattern) }}
+			{{ form_widget(form.input_pattern) }}
+			<span>
+				{{ form_errors(form.input_pattern) }}
+				{{ form_help(form.input_pattern) }}
+			</span>
+		</div>
+
+		<div class="form-group">
+			{{ form_label(form.output_pattern) }}
+			{{ form_widget(form.output_pattern) }}
+			<span>
+				{{ form_errors(form.output_pattern) }}
+				{{ form_help(form.output_pattern) }}
+			</span>
+		</div>
+
+		<div class="form-group">
+			{{ form_label(form.tests) }}
+			{{ form_widget(form.tests) }}
+			<span>
+				{{ form_errors(form.tests) }}
+			</span>
+		</div>
+
+
+		<div class="form-group">
+			{{ form_widget(form.save) }}
+		</div>
+		{{ form_row(form._token) }}
+
+		{{ form_errors(form) }}
+
+		{{ form_end(form,{'render_rest':false}) }}
+	</div>
+{% endblock %}

@@ -2,12 +2,18 @@
 
 namespace App\Controller;
 
+use App\Entity\TaskTest;
 use App\Entity\Task;
 use App\Entity\TaskMeta;
+use App\Exception\TestUploaderException;
 use App\Form\TaskType;
+use App\Form\TaskTestType;
 use App\Repository\TaskMetaRepository;
 use App\Repository\TaskRepository;
+use App\Repository\TaskTestRepository;
+use App\Services\TestUploader;
 use DateTimeImmutable;
+use Exception;
 use Psr\Log\LoggerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -47,6 +53,61 @@ class TaskController extends AbstractController
         return $this->render('task/index.html.twig', ['task' => $task]);
     }
 
+    #[IsGranted('ROLE_ADMIN')]
+    #[Route('/task/addtest/{id<\d+>}', methods: ['POST', 'GET'], name: 'app_task_add_test')]
+    public function addTest(int $id, Request $request, TaskRepository $taskRepository, TestUploader $testUploader): Response
+    {
+        // find task with this id
+        $task = $taskRepository->find($id);
+
+        if (!$task) {
+            throw $this->createNotFoundException(
+                'Task with ID: ' . $id . ' not found'
+            );
+        }
+
+        $taskTest = new TaskTest();
+        $taskTest->setTask($task);
+
+        // create and handle task test form
+        $taskForm = $this->createForm(TaskTestType::class, $taskTest);
+        $taskForm->handleRequest($request);
+
+
+        // if form is not submitted and valid
+        if (!($taskForm->isSubmitted() && $taskForm->isValid())) {
+            return $this->renderForm('task/add_task_form.html.twig', [
+                'task' => $task,
+                'form' => $taskForm,
+                'task' => $task
+            ]);
+        }
+
+        // if form is submitted and valid
+
+        /** @var TaskTest $taskTest */
+        $taskTest = $taskForm->getData();
+        $archive = $taskForm->get('tests')->getData();
+        $inputPattern = $taskForm->get('input_pattern')->getData();
+        $outputPattern =  $taskForm->get('output_pattern')->getData();
+
+        // if has no uploaded tests
+        $testUploader->openZip($archive);
+        $numberOfUploadedTests = 0;
+
+        try {
+            $numberOfUploadedTests = $testUploader->extractTestsIfHasPair($task, $inputPattern, $outputPattern, $this->getParameter('test_directory'));
+        } catch (TestUploaderException $exception) {
+            $this->addFlash('success', $exception->getMessage());
+            return $this->redirectToRoute('app_task_add_test', ['id' => $task->getId()]);
+        }
+
+        $this->addFlash('success', "{$numberOfUploadedTests} tests was uploaded to task '{$task->getName()}'");
+        return $this->redirectToRoute('app_task_add_test', ['id' => $task->getId()]);
+    }
+
+
+    #[IsGranted('ROLE_ADMIN')]
     #[Route('/task/create', methods: ['GET', 'POST'], name: 'app_task_create')]
     public function createTask(Request $request, TaskRepository $taskRepository, TaskMetaRepository $taskMetaRepository): Response
     {
@@ -58,11 +119,15 @@ class TaskController extends AbstractController
 
         // Handle and Save Form
         if ($taskForm->isSubmitted()  && $taskForm->isValid()) {
+
+            /** @var User $user */
+            $user = $this->getUser();
+
             /** @var Task $task */
             $task = $taskForm->getData();
             $task->setPublished(0);
             $taskMeta = new TaskMeta();
-            $taskMeta->setAuthor('Nick'); // temporary
+            $taskMeta->setAuthor($user->getId()); // temporary
             $taskMeta->setTask($task);
             $taskMeta->setSolved(0);
             $taskMeta->setComplexity(0);
@@ -82,6 +147,7 @@ class TaskController extends AbstractController
         ]);
     }
 
+    #[IsGranted('ROLE_ADMIN')]
     #[Route('/task/update/{id<\d{1,5}>}', methods: ['GET', 'POST'], name: 'app_task_update')]
     public function updateTask(int $id, Request $request, TaskRepository $taskRepository, LoggerInterface $logg): Response
     {
@@ -89,11 +155,13 @@ class TaskController extends AbstractController
 
         // check if task is exists
         // todo: change throw to addflash
+
         if (!$task) {
             throw $this->createNotFoundException(
                 'Task with ID: ' . $id . ' not found'
             );
         }
+
 
         $isPublished = $task->isPublished();
 
@@ -117,7 +185,7 @@ class TaskController extends AbstractController
             // todo: Maybe Create FlaskGenerator Service 
             $this->addFlash('success', "Task `{$task->getName()}` was successfully updated.");
 
-            return $this->redirectToRoute('app_task_single', ['id' => $id]);
+            return $this->redirectToRoute('app_task_single_page', ['id' => $id]);
         }
 
 

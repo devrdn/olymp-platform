@@ -6,6 +6,7 @@ use App\Repository\TaskTestRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: TaskTestRepository::class)]
+#[ORM\UniqueConstraint(name: 'unique_tests', columns: ['task_id', 'input_data'])]
 class TaskTest
 {
     #[ORM\Id]
