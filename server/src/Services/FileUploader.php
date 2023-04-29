@@ -3,8 +3,6 @@
 namespace App\Services;
 
 use App\Exception\FileUploaderException;
-use Exception;
-use phpDocumentor\Reflection\File;
 use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
