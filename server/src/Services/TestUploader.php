@@ -37,7 +37,7 @@ class TestUploader
    private const FILE_IDENTIFIER_PATTERN = "[id]";
 
 
-   public function __construct(private TaskTestRepository $taskTestRepository, private Filesystem $filesystem)
+   public function __construct(private TaskTestRepository $taskTestRepository, private readonly Filesystem $filesystem)
    {
       $this->zip = new ZipArchive;
    }
@@ -65,9 +65,9 @@ class TestUploader
     * @param Task    $task          The task to which the tests belong
     * @param string  $inputPattern  The pattern used to identify input files
     * @param string  $outputPattern The pattern used to identify output files
-    * @param string  $path          The to `data` folder
-    * @param bool    $close         Whether or not the zip archive should be closed after extracting the tests (defaults to true)
-    * @param bool    $testHasPairs  Whether or not the input tests have pairs (defaults to true)
+    * @param string  $path          The `data` folder
+    * @param bool    $close         Whether the zip archive should be closed after extracting the tests (defaults to true)
+    * @param bool    $testHasPairs  Whether the input tests have pairs (defaults to true)
     *
     * @return int Number of uploaded tests
     *
@@ -128,15 +128,16 @@ class TestUploader
       return count($filesToExtract['input_files']) + count($filesToExtract['output_files']);
    }
 
-   /** 
-    * Extracts and saves tests 
-    * 
-    * @param Task    $task
-    * @param string  $pathToTestFolder The path to the folder where the tests should be saved.
-    * @param array   $inputFiles       An array of input tests
-    * @param array   $outputFiles      An array of output tests
-    */
-   private function extractAndSaveTests(Task $task, string $pathToTestFolder, array $inputFiles, array $outputFiles)
+    /**
+     * Extracts and saves tests
+     *
+     * @param Task $task
+     * @param string $pathToTestFolder The path to the folder where the tests should be saved.
+     * @param array $inputFiles An array of input tests
+     * @param array $outputFiles An array of output tests
+     * @throws TestUploaderException
+     */
+   private function extractAndSaveTests(Task $task, string $pathToTestFolder, array $inputFiles, array $outputFiles): void
    {
       for ($i = 0; $i < count($inputFiles); $i++) {
          $this->saveTests($task, $pathToTestFolder, $inputFiles[$i], $inputFiles[$i]);
@@ -144,14 +145,15 @@ class TestUploader
       }
    }
 
-   /**
-    *  Save tests to the database. 
-    *
-    * @param Task    $task       The task object 
-    * @param string  $path       Tests folders
-    * @param string  $inputFile  The name of the input file
-    * @param string  $outputFile The name of the output file
-    */
+    /**
+     *  Save tests to the database.
+     *
+     * @param Task $task The task object
+     * @param string $path Tests folders
+     * @param string $inputFile The name of the input file
+     * @param string $outputFile The name of the output file
+     * @throws TestUploaderException
+     */
    private function saveTests(Task $task, string $path, string $inputFile, string $outputFile): void
    {
 
@@ -178,14 +180,15 @@ class TestUploader
       }
    }
 
-   /**
-    * Extract files to a specified path.
-    * 
-    * @param string|array  $file The file or array of files to extract.
-    * @param string        $path The path to extract the files to.
-    * 
-    * @return bool True if the extraction was successful, false otherwise.
-    */
+    /**
+     * Extract files to a specified path.
+     *
+     * @param string|array $file The file or array of files to extract.
+     * @param string $path The path to extract the files to.
+     *
+     * @return bool True if the extraction was successful, false otherwise.
+     * @throws TestUploaderException
+     */
    private function extractFilesTo(string|array $file, string $path): bool
    {
       try {

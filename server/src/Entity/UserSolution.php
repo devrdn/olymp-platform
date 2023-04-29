@@ -27,11 +27,12 @@ class UserSolution
     #[ORM\Column]
     private ?int $status = null;
     
-    public function __construct(User $user, Task $task, string $filename)
+    public function __construct(User $user, Task $task, string $filename, int $status = 0)
     {
         $this->user = $user;
         $this->task = $task;
         $this->filename = $filename;
+        $this->status = $status;
     }
 
     public function getId(): ?int
