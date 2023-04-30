@@ -26,6 +26,9 @@ class UserSolution
 
     #[ORM\Column]
     private ?int $status = null;
+
+    #[ORM\Column]
+    private ?\DateTimeImmutable $uploadedAt = null;
     
     public function __construct(User $user, Task $task, string $filename, int $status = 0)
     {
@@ -33,6 +36,7 @@ class UserSolution
         $this->task = $task;
         $this->filename = $filename;
         $this->status = $status;
+        $this->uploadedAt = new \DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -84,6 +88,18 @@ class UserSolution
     public function setStatus(int $status): self
     {
         $this->status = $status;
+
+        return $this;
+    }
+
+    public function getUploadedAt(): ?\DateTimeImmutable
+    {
+        return $this->uploadedAt;
+    }
+
+    public function setUploadedAt(\DateTimeImmutable $uploadedAt): self
+    {
+        $this->uploadedAt = $uploadedAt;
 
         return $this;
     }
