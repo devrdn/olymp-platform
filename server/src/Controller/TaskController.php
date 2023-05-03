@@ -91,7 +91,7 @@ class TaskController extends AbstractController
         /** @var UploadedFile $uploadedSolutionAsFile */
         $uploadedSolutionAsFile = $uploadSolutionForm->get('file_solution')->getData();
         $uploadedSolutionAsText = $uploadSolutionForm->get('text_solution')->getData();
-        $solutionExtesion = $uploadSolutionForm->get('language')->getData();
+        $solutionExtension = $uploadSolutionForm->get('language')->getData();
 
         // generate target directory
         $targetDirectory = $this->getParameter('user_directory') . '/' . $user->getId();
@@ -106,7 +106,7 @@ class TaskController extends AbstractController
 
             // Handle Text User Solution 
             else if ($uploadedSolutionAsText) {
-                $fileName = $solutionUploader->uploadSolutionAsText($uploadedSolutionAsText, $id, $targetDirectory, $solutionExtesion);
+                $fileName = $solutionUploader->uploadSolutionAsText($uploadedSolutionAsText, $id, $targetDirectory, $solutionExtension);
             }
         } catch (FileUploaderException $exception) {
             $this->addFlash('error', $exception->getMessage());
