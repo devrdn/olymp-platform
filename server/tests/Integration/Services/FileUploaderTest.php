@@ -8,11 +8,18 @@ use PHPUnit\Util\Filesystem;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 class FileUploaderTest extends KernelTestCase {
+    public function dataCreateAndUploadFile(): array {
+        return [
+            ["../data/user/1", "task.txt", "Test Content"],
+            ["../data/user/3", "task_2.txt", "Контент"],
+            ["../data/user/1", "task_1_1.txt", "Hey, Hey, Hey"],
+        ];
+    }
 
     /**
      * @dataProvider dataCreateAndUploadFile
      */
-    public function testCreateAndUploadFile(string $fileDirectory, string $fileName, string $fileContent) {
+    public function testCreateAndUploadFile(string $fileDirectory, string $fileName, string $fileContent, string $exception = null) {
         // boot Symfony Kernel
         self::bootKernel();
 
@@ -31,10 +38,19 @@ class FileUploaderTest extends KernelTestCase {
         $this->assertStringEqualsFile($filePath, $fileContent);
     }
 
+    public function dataCreateAndUploadFileException(): array
+    {
+        return [
+            ["../.*de=a-=asd", "task.txt", "Test Content"],
+            ["...", "task.txt", "Test Content"],
+            ["data", "", "Test Content"],
+        ];
+    }
+
     /**
      * @dataProvider dataCreateAndUploadFileException
      */
-    public function testCreateAndUploadException(string $fileDirectory, string $fileName, string $fileContent)
+    public function testCreateAndUploadFileException(string $fileDirectory, string $fileName, string $fileContent)
     {
         self::bootKernel();
 
@@ -49,22 +65,5 @@ class FileUploaderTest extends KernelTestCase {
         $fileUploader = $container->get(FileUploader::class);
         $fileUploader->setTargetDirectory($fileDirectory);
         $fileUploader->createAndUploadFile($fileContent, $fileName);
-    }
-
-    public function dataCreateAndUploadFile(): array {
-        return [
-            ["../data/user/1", "task.txt", "Test Content"],
-            ["../data/user/3", "task_2.txt", "Контент"],
-            ["../data/user/1", "task_1_1.txt", "Hey, Hey, Hey"],
-        ];
-    }
-
-    public function dataCreateAndUploadFileException(): array
-    {
-        return [
-            ["../.*de=a-=asd", "task.txt", "Test Content"],
-            ["...", "task.txt", "Test Content"],
-            ["data", "", "Test Content"],
-        ];
     }
 }
