@@ -68,7 +68,7 @@ class FileUploader
         $this->createTargetDirectoryIfNotExist();
         $this->createFile($filePath, $fileContent);
 
-        return $this->getFullFilePath($filePath);
+        return $filePath;
     }
 
     /**
@@ -95,7 +95,7 @@ class FileUploader
         if (!$this->fileSystem->exists($this->targetDirectory)) {
             try {
                 $this->fileSystem->mkdir($this->targetDirectory);
-            } catch (IOException  $exception) {
+            } catch (\Exception  $exception) {
                 throw $this->createFileUploaderException("It's impossible upload solution right now, try later");
             }
         }
