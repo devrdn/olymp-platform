@@ -44,7 +44,7 @@ class FileUploader
         $fileNameToUpload = $fileName === '' ? $file->getClientOriginalName() : $fileName;
         try {
             $file->move($this->targetDirectory, $fileNameToUpload);
-        } catch (FileException) {
+        } catch (FileException $exception) {
             throw $this->createFileUploaderException("Cannot move file to directory");
         }
 

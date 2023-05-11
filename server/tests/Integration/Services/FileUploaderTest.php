@@ -4,11 +4,31 @@ namespace App\Tests\Integration\Services;
 
 use App\Exception\FileUploaderException;
 use App\Services\FileUploader;
-use PHPUnit\Util\Filesystem;
+use App\Tests\Config\Constants;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
-class FileUploaderTest extends KernelTestCase {
-    public function dataCreateAndUploadFile(): array {
+class FileUploaderTest extends KernelTestCase
+{
+    private const TEST_DIR = __DIR__ . "/data";
+
+    private FileUploader $fileUploader;
+
+    /**
+     * @throws Exception
+     */
+    public function setUp(): void
+    {
+        // boot kernel and get service
+        self::bootKernel();
+        $container = static::getContainer();
+        $this->fileUploader = $container->get(FileUploader::class);
+    }
+
+    public function dataCreateAndUploadFile(): array
+    {
         return [
             ["../data/user/1", "task.txt", "Test Content"],
             ["../data/user/3", "task_2.txt", "Контент"],
@@ -18,20 +38,13 @@ class FileUploaderTest extends KernelTestCase {
 
     /**
      * @dataProvider dataCreateAndUploadFile
+     * @throws FileUploaderException
+     * @throws Exception
      */
-    public function testCreateAndUploadFile(string $fileDirectory, string $fileName, string $fileContent, string $exception = null) {
-        // boot Symfony Kernel
-        self::bootKernel();
-
-        // access service container
-        $container = static::getContainer();
-
-        /**
-         * @var FileUploader $fileUploader
-         */
-        $fileUploader = $container->get(FileUploader::class);
-        $fileUploader->setTargetDirectory($fileDirectory);
-        $filePath = $fileUploader->createAndUploadFile($fileContent, $fileName);
+    public function testCreateAndUploadFile(string $fileDirectory, string $fileName, string $fileContent, string $exception = null)
+    {
+        $this->fileUploader->setTargetDirectory($fileDirectory);
+        $filePath = $this->fileUploader->createAndUploadFile($fileContent, $fileName);
 
         // if file exist and contain right content
         $this->assertFileExists($filePath);
@@ -52,18 +65,47 @@ class FileUploaderTest extends KernelTestCase {
      */
     public function testCreateAndUploadFileException(string $fileDirectory, string $fileName, string $fileContent)
     {
-        self::bootKernel();
-
-        // access service container
-        $container = static::getContainer();
-
         $this->expectException(FileUploaderException::class);
 
-        /**
-         * @var FileUploader $fileUploader
-         */
-        $fileUploader = $container->get(FileUploader::class);
-        $fileUploader->setTargetDirectory($fileDirectory);
-        $fileUploader->createAndUploadFile($fileContent, $fileName);
+        $this->fileUploader->setTargetDirectory($fileDirectory);
+        $this->fileUploader->createAndUploadFile($fileContent, $fileName);
+    }
+
+    public function dataUploadFile(): array
+    {
+            return [
+                [new UploadedFile(self::TEST_DIR . '/test.txt', 'test.txt', null, null, true), "", __DIR__ . '/data/out'],
+                [new UploadedFile(self::TEST_DIR . '/test.cpp', 'test.cpp', null, null, true), "test.cpp", __DIR__ . '/data/out'],
+            ];
+    }
+
+    /**
+     * @dataProvider dataUploadFile
+     */
+    public function testUploadFile(UploadedFile $file, string $newFileName, string $targetDirectory)
+    {
+        $this->fileUploader->setTargetDirectory($targetDirectory);
+        $filePath = $this->fileUploader->uploadFile($file, $newFileName);
+        $this->assertFileExists($filePath);
+    }
+
+
+    public function dataUploadFileException(): array
+    {
+        return [
+            [new UploadedFile(self::TEST_DIR . '/test.txt', 'test.txt', null, null, true), "", __DIR__ . '.../data/'],
+            [new UploadedFile(self::TEST_DIR . '/test.cpp', 'test.png', null, null, true), "new_test.png", __DIR__ . '...']
+        ];
+    }
+
+    /**
+     * @dataProvider dataUploadFileException
+     */
+    public function testUploadFileException(UploadedFile $file, string $newFileName, string $targetDirectory)
+    {
+        $this->expectException(FileUploaderException::class);
+
+        $this->fileUploader->setTargetDirectory($targetDirectory);
+        $this->fileUploader->uploadFile($file, $newFileName);
     }
 }
