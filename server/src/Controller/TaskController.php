@@ -25,6 +25,7 @@ use Psr\Log\LoggerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -68,8 +69,9 @@ class TaskController extends AbstractController
         ]);
     }
 
-    #[Route('/task/upload/{id<\d+>}', methods: ['POST'], name: 'app_solution_upload')]
-    public function uploadSolution(int $id, Request $request, SolutionUploader $solutionUploader, TaskRepository $taskRepository, UserSolutionRepository $userSolutionRepository)
+    #[IsGranted('IS_AUTHENTICATED_FULLY')]
+    #[Route('/task/upload/{id<\d+>}', name: 'app_solution_upload', methods: ['POST'])]
+    public function uploadSolution(int $id, Request $request, SolutionUploader $solutionUploader, TaskRepository $taskRepository, UserSolutionRepository $userSolutionRepository): RedirectResponse
     {
         $task = $taskRepository->find($id);
         if (!$task) {
