@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Config\AllowedExtesions;
+use App\Config\AllowedExtensions;
 use App\Entity\Task;
 use App\Entity\User;
 use App\Entity\UserSolution;
@@ -52,12 +52,12 @@ class SolutionUploader extends FileUploader
      * @param string $solutionAsText
      * @param string $solutionId
      * @param string $targetDirectory
-     * @param AllowedExtesions $solutionExtesion
+     * @param AllowedExtensions $solutionExtesion
      *
      * @return string solution file name
      * @throws FileUploaderException
      */
-    public function uploadSolutionAsText(string $solutionAsText, string $solutionId, string $targetDirectory, AllowedExtesions $solutionExtesion): string
+    public function uploadSolutionAsText(string $solutionAsText, string $solutionId, string $targetDirectory, AllowedExtensions $solutionExtesion): string
     {
         $this->setTargetDirectory($targetDirectory);
 

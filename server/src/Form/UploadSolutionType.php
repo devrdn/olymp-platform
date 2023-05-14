@@ -2,7 +2,7 @@
 
 namespace App\Form;
 
-use App\Config\AllowedExtesions;
+use App\Config\AllowedExtensions;
 use App\EventSubscriber\OnlyOneFieldFilledSubscriber;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EnumType;
@@ -19,7 +19,7 @@ class UploadSolutionType extends AbstractType
         $builder
             ->add('language', EnumType::class, [
                 'label' => "Programming Language",
-                'class' => AllowedExtesions::class,
+                'class' => AllowedExtensions::class,
             ])
             ->add('file_solution', FileType::class, [
                 'attr' => ['class' => 'form-control'],

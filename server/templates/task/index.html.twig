@@ -1,55 +1,105 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}
-	{{ task.name }}
+    {{ task.name }}
 {% endblock %}
 
 {% block body %}
-	<div class="wrapper">
-		<div class="task">
-			<div class="task__field task__name">
-				<h1>😃{{ task.name }}</h1>
-			</div>
+    <div class="wrapper">
+        <div class="task">
+            <div id="task_status"></div>
+            <div class="task__field task__name">
+                <h1>😃{{ task.name }}</h1>
+            </div>
 
-			<div class="task__field task__description">
-				<h3>Description</h3><hr>
-				<h7>{{ task.description | raw }}</h7>
-			</div>
+            <div class="task__field task__description">
+                <h3>Description</h3>
+                <hr>
+                <h7>{{ task.description | raw }}</h7>
+            </div>
 
-			<div class="task__field task__limits">
-				<h3>Time And Memory Limit</h3><hr>
-				<h7>Time Limit:
-					{{ task.timeLimit }}, Memory Limit:
-					{{ task.memoryLimit }}</h7>
-			</div>
+            <div class="task__field task__limits">
+                <h3>Time And Memory Limit</h3>
+                <hr>
+                <h7>Time Limit:
+                    {{ task.timeLimit }}, Memory Limit:
+                    {{ task.memoryLimit }}</h7>
+            </div>
 
-			<div class="task__field task__example">
-				<h3>Example Input and Output</h3><hr>
-				<h7>Example Input:
-					{{ task.exampleInput|raw }}Example Output:
-					{{ task.exampleOutput|raw }}</h7>
-			</div>
+            <div class="task__field task__example">
+                <h3>Example Input and Output</h3>
+                <hr>
+                <h7>Example Input:
+                    {{ task.exampleInput|raw }}Example Output:
+                    {{ task.exampleOutput|raw }}</h7>
+            </div>
 
-			<div class="task__field task__example">
-				<h3>Author</h3><hr>
-				<h7>{{ task.taskMeta.author }}</h7>
-			</div>
+            <div class="task__field task__example">
+                <h3>Author</h3>
+                <hr>
+                <h7>{{ task.taskMeta.author }}</h7>
+            </div>
 
-			<div class="task__field task__example">
-				<h3>Created</h3><hr>
-				<h7>{{ task.taskMeta.createdAt | date("Y-m-d H:i:s") }}</h7>
-			</div>
+            <div class="task__field task__example">
+                <h3>Created</h3>
+                <hr>
+                <h7>{{ task.taskMeta.createdAt | date("Y-m-d H:i:s") }}</h7>
+            </div>
 
-			<div class="task__field task__example">
-				<h3>Input and Output files</h3><hr>
-				{% for task in task.taskTests %}
-					Input:
-					{{ task.inputData}}
-					| Output:
-					{{ task.outputData }}<br>
-				{% endfor %}
-			</div>
-		</div>
-		{% include "task/_upload_solution.html.twig" with { form: form } %}
-	</div>
+            <div class="task__field task__example">
+                <h3>Input and Output files</h3>
+                <hr>
+                {% for task in task.taskTests %}
+                    Input:
+                    {{ task.inputData }}
+                    | Output:
+                    {{ task.outputData }}<br>
+                {% endfor %}
+            </div>
+        </div>
+        {% include "task/_upload_solution.html.twig" with { form: form } %}
+    </div>
+{% endblock %}
+
+{% block script %}
+    {% if app.user %}
+        <script>
+            const userId = {{ app.user.id }};
+            const taskId = {{ task.Id }};
+            const taskStatus = document.querySelector("#task_status");
+
+            const onSuccess = (status) => {
+                status.json().then(item => {
+                    taskStatus.innerHTML = `
+                        <p> ${item.task_status.name} </p>
+                    `;
+
+                    if (item.task_status.value === 3 || item.task_status.value === 11) {
+                        clearInterval(interval);
+                    }
+                }).catch(err => {
+                    clearInterval(interval);
+                })
+            }
+
+            const onError = (status) => {
+                status.json().then(item => {
+                    taskStatus.innerHTML = JSON.stringify(item);
+                });
+                clearInterval(interval);
+            }
+
+            const handleInfo = (onSuccess, onError) => {
+                fetch(`/api/v1/status/${userId}/${taskId}`).then((status) => {
+                    onSuccess(status);
+                }).catch((err) => {
+                    onError(err);
+                })
+            }
+
+            const interval = setInterval(() => {
+                handleInfo(onSuccess, onError);
+            }, 2000);
+        </script>
+    {% endif %}
 {% endblock %}

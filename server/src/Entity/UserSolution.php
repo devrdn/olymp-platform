@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Config\TaskStatus;
 use App\Repository\UserSolutionRepository;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -25,12 +26,12 @@ class UserSolution
     private ?string $filename = null;
 
     #[ORM\Column]
-    private ?int $status = null;
+    private ?TaskStatus $status = null;
 
     #[ORM\Column]
     private ?\DateTimeImmutable $uploadedAt = null;
     
-    public function __construct(User $user, Task $task, string $filename, int $status = 0)
+    public function __construct(User $user, Task $task, string $filename, TaskStatus $status = TaskStatus::QUEUE)
     {
         $this->user = $user;
         $this->task = $task;
@@ -80,12 +81,12 @@ class UserSolution
         return $this;
     }
 
-    public function getStatus(): ?int
+    public function getStatus(): ?TaskStatus
     {
         return $this->status;
     }
 
-    public function setStatus(int $status): self
+    public function setStatus(TaskStatus $status): self
     {
         $this->status = $status;
 

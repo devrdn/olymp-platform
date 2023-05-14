@@ -2,7 +2,7 @@
 
 namespace App\Config;
 
-enum AllowedExtesions: string
+enum AllowedExtensions: string
 {
    case Python = "py";
    case CPP = 'cpp';
