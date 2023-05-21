@@ -79,7 +79,6 @@ class TaskController extends AbstractController
         SolutionUploader       $solutionUploader,
         TaskRepository         $taskRepository,
         UserSolutionRepository $userSolutionRepository,
-        TranslatorInterface    $translator
     ): Response
     {
         $task = $taskRepository->find($id);
