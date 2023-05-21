@@ -2,6 +2,7 @@
 
 namespace App\EventSubscriber;
 
+use App\Constants\MessageConstants;
 use Doctrine\Common\Collections\ArrayCollection;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
@@ -29,7 +30,7 @@ class OnlyOneFieldFilledSubscriber implements EventSubscriberInterface
       }
    }
 
-   public static function getSubscribedEvents()
+   public static function getSubscribedEvents(): array
    {
       // return the subscribed events, their methods and priorities
       return [
@@ -45,7 +46,7 @@ class OnlyOneFieldFilledSubscriber implements EventSubscriberInterface
     * @param FormEvent $event
     * @return void
     */
-   public function handleOnSubmit(FormEvent $event)
+   public function handleOnSubmit(FormEvent $event): void
    {
       $formData = $event->getData();
 
@@ -66,11 +67,11 @@ class OnlyOneFieldFilledSubscriber implements EventSubscriberInterface
     * @param int $countOfFillFields Count of form fields that are filled 
     * @return void
     */
-   public function addFormError(FormEvent $event, int $countOfFillFields)
+   public function addFormError(FormEvent $event, int $countOfFillFields): void
    {
       if ($countOfFillFields == 0 || $countOfFillFields > 1) {
          $event->getForm()->addError(
-            new FormError("You need to fill only one field")
+            new FormError(MessageConstants::ONLY_ONE_FIELD_FILLED)
          );
       }
    }

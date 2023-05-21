@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Constants\MessageConstants;
 use App\Entity\TaskTest;
 use App\Entity\Task;
 use App\Entity\TaskMeta;
@@ -30,10 +31,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class TaskController extends AbstractController
 {
-    #[Route('/task/{page<\d+>}', methods: ['GET'], name: 'app_task_list',  defaults: ['page' => 0])]
+    #[Route('/task/{page<\d+>}', methods: ['GET'], name: 'app_task_list', defaults: ['page' => 0])]
     public function showAllTasks(int $page, TaskRepository $taskRepository): Response
     {
         $offset = max(0, $page);
@@ -70,8 +72,15 @@ class TaskController extends AbstractController
     }
 
     #[IsGranted('IS_AUTHENTICATED_FULLY')]
-    #[Route('/task/upload/{id<\d+>}', name: 'app_solution_upload', methods: ['POST'])]
-    public function uploadSolution(int $id, Request $request, SolutionUploader $solutionUploader, TaskRepository $taskRepository, UserSolutionRepository $userSolutionRepository): RedirectResponse
+    #[Route('/task/show/{id<\d+>}', name: 'app_solution_upload', methods: ['POST'])]
+    public function uploadSolution(
+        int                    $id,
+        Request                $request,
+        SolutionUploader       $solutionUploader,
+        TaskRepository         $taskRepository,
+        UserSolutionRepository $userSolutionRepository,
+        TranslatorInterface    $translator
+    ): Response
     {
         $task = $taskRepository->find($id);
         if (!$task) {
@@ -83,8 +92,12 @@ class TaskController extends AbstractController
         $uploadSolutionForm = $this->createForm(UploadSolutionType::class);
         $uploadSolutionForm->handleRequest($request);
 
+        // check is form is valid and submitted
         if (!($uploadSolutionForm->isSubmitted() && $uploadSolutionForm->isValid())) {
-            return $this->redirectToRoute('app_task_single_page', ['id' => $id]);
+            return $this->renderForm('task/index.html.twig', [
+                'task' => $task,
+                'form' => $uploadSolutionForm,
+            ]);
         }
 
         /** @var User $user */
@@ -104,22 +117,21 @@ class TaskController extends AbstractController
             // Handle File User Solution
             if ($uploadedSolutionAsFile) {
                 $fileName = $solutionUploader->uploadSolutionAsFile($uploadedSolutionAsFile, $id, $targetDirectory);
-            }
-
-            // Handle Text User Solution 
+            } // Handle Text User Solution
             else if ($uploadedSolutionAsText) {
                 $fileName = $solutionUploader->uploadSolutionAsText($uploadedSolutionAsText, $id, $targetDirectory, $solutionExtension);
             }
         } catch (FileUploaderException $exception) {
-            $this->addFlash('error', $exception->getMessage());
+            $this->addFlash('error', "There are some errors during uploading the solution");
             return $this->redirectToRoute('app_task_single_page', ['id' => $id]);
         }
 
         // Save to DataBase
         $userSolution = new UserSolution($user, $task, $fileName);
         $userSolutionRepository->save($userSolution, true);
-        
-        $this->addFlash('success', 'Solution is succefully uploaded');
+
+        $this->addFlash('success', MessageConstants::SUCCESSFULLY_UPLOADED);
+
         return $this->redirectToRoute('app_task_single_page', ['id' => $id]);
     }
 
@@ -159,7 +171,7 @@ class TaskController extends AbstractController
         $taskTest = $taskForm->getData();
         $archive = $taskForm->get('tests')->getData();
         $inputPattern = $taskForm->get('input_pattern')->getData();
-        $outputPattern =  $taskForm->get('output_pattern')->getData();
+        $outputPattern = $taskForm->get('output_pattern')->getData();
 
         // if has no uploaded tests
         $testUploader->openZip($archive);
@@ -187,7 +199,7 @@ class TaskController extends AbstractController
         $taskForm->handleRequest($request);
 
         // Handle and Save Form
-        if ($taskForm->isSubmitted()  && $taskForm->isValid()) {
+        if ($taskForm->isSubmitted() && $taskForm->isValid()) {
             /** @var Task $task */
             $task = $taskForm->getData();
             $task->setPublished(0);
@@ -234,7 +246,7 @@ class TaskController extends AbstractController
         $taskForm->handleRequest($request);
 
         // Handle and Save Form
-        if ($taskForm->isSubmitted()  && $taskForm->isValid()) {
+        if ($taskForm->isSubmitted() && $taskForm->isValid()) {
 
             /** @var Task $task */
             $task = $taskForm->getData();

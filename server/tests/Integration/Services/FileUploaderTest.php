@@ -75,7 +75,7 @@ class FileUploaderTest extends KernelTestCase
     {
             return [
                 [new UploadedFile(self::TEST_DIR . '/test.txt', 'test.txt', null, null, true), "", __DIR__ . '/data/out'],
-                [new UploadedFile(self::TEST_DIR . '/test.cpp', 'test.cpp', null, null, true), "test.cpp", __DIR__ . '/data/out'],
+                [new UploadedFile(self::TEST_DIR . '/helloWorld.cpp', 'helloWorld.cpp', null, null, true), "helloWorld.cpp", __DIR__ . '/data/out'],
             ];
     }
 
@@ -94,7 +94,7 @@ class FileUploaderTest extends KernelTestCase
     {
         return [
             [new UploadedFile(self::TEST_DIR . '/test.txt', 'test.txt', null, null, true), "", __DIR__ . '.../data/'],
-            [new UploadedFile(self::TEST_DIR . '/test.cpp', 'test.png', null, null, true), "new_test.png", __DIR__ . '...']
+            [new UploadedFile(self::TEST_DIR . '/helloWorld.cpp', 'test.png', null, null, true), "new_test.png", __DIR__ . '...']
         ];
     }
 

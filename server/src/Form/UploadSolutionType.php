@@ -11,6 +11,7 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\File;
 
 class UploadSolutionType extends AbstractType
 {
@@ -24,7 +25,9 @@ class UploadSolutionType extends AbstractType
             ->add('file_solution', FileType::class, [
                 'attr' => ['class' => 'form-control'],
                 'required' => false,
-                'attr' => ['class' => 'form-control'],
+                'constraints' => new File([
+                    'maxSize' => '8192k',
+                ])
             ])
             ->add('text_solution', TextareaType::class, [
                 'required' => false
