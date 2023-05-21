@@ -88,7 +88,7 @@ class UploadTest extends WebTestCase
 
         $client->followRedirects();
 
-        $crawler = $client->request('GET', '/task/view/4');
+        $client->request('GET', '/task/view/4');
 
         $client->submitForm("upload_solution[save]", [
                 "upload_solution[text_solution]" => $text,

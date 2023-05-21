@@ -72,7 +72,7 @@ class TaskController extends AbstractController
     }
 
     #[IsGranted('IS_AUTHENTICATED_FULLY')]
-    #[Route('/task/show/{id<\d+>}', name: 'app_solution_upload', methods: ['POST'])]
+    #[Route('/task/view/{id<\d+>}', name: 'app_solution_upload', methods: ['POST'])]
     public function uploadSolution(
         int                    $id,
         Request                $request,
