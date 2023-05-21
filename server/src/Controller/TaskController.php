@@ -33,6 +33,8 @@ use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
 class TaskController extends AbstractController
 {
+    public const SUCCESS_UPLOAD_MESSAGE = "Solution is successfully uploaded";
+
     #[Route('/task/{page<\d+>}', methods: ['GET'], name: 'app_task_list',  defaults: ['page' => 0])]
     public function showAllTasks(int $page, TaskRepository $taskRepository): Response
     {
@@ -119,7 +121,7 @@ class TaskController extends AbstractController
         $userSolution = new UserSolution($user, $task, $fileName);
         $userSolutionRepository->save($userSolution, true);
         
-        $this->addFlash('success', 'Solution is succefully uploaded');
+        $this->addFlash('success', self::SUCCESS_UPLOAD_MESSAGE);
         return $this->redirectToRoute('app_task_single_page', ['id' => $id]);
     }
 
