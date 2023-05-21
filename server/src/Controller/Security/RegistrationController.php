@@ -1,25 +1,19 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Security;
 
 use App\Entity\User;
 use App\Form\RegistrationFormType;
 use App\Repository\UserRepository;
-use DateTimeImmutable;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * Controller responsible for user registration
- */
 class RegistrationController extends AbstractController
 {
-    // todo: add email verify and user ip 
-
+    // todo: add email verify and user ip
     #[Route('/register', name: 'app_register', methods: ["POST", "GET"])]
     public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, UserRepository $userRepository): Response
     {
@@ -47,8 +41,9 @@ class RegistrationController extends AbstractController
         }
 
         // render registration form
-        return $this->render('registration/register.html.twig', [
+        return $this->render('security/register.html.twig', [
             'registrationForm' => $form->createView(),
         ]);
     }
+
 }
