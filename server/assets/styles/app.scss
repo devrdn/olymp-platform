@@ -1,5 +1,14 @@
+// add tailwind directives
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+// import fonts
+@import url('https://fonts.googleapis.com/css2?family=Raleway:wght@100;300;400;500;600;800;900&display=swap');
+
 body {
     background-color: white;
+    @apply font-sans;
 }
 
 .form-control-dark {
