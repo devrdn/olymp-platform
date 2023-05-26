@@ -2,28 +2,40 @@
 
 namespace App\Controller;
 
+use App\Constants\MessageConstants;
 use App\Entity\TaskTest;
 use App\Entity\Task;
 use App\Entity\TaskMeta;
+use App\Entity\User;
+use App\Entity\UserSolution;
+use App\Exception\FileUploaderException;
 use App\Exception\TestUploaderException;
 use App\Form\TaskType;
 use App\Form\TaskTestType;
-use App\Repository\TaskMetaRepository;
+use App\Form\UploadSolutionType;
 use App\Repository\TaskRepository;
+use App\Repository\TaskMetaRepository;
 use App\Repository\TaskTestRepository;
+use App\Repository\UserSolutionRepository;
 use App\Services\TestUploader;
+use App\Services\FileUploader;
+use App\Services\SolutionUploader;
 use DateTimeImmutable;
 use Exception;
 use Psr\Log\LoggerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\CurrentUser;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class TaskController extends AbstractController
 {
-    #[Route('/task/{page<\d+>}', methods: ['GET'], name: 'app_task_list',  defaults: ['page' => 0])]
+    #[Route('/task/{page<\d+>}', methods: ['GET'], name: 'app_task_list', defaults: ['page' => 0])]
     public function showAllTasks(int $page, TaskRepository $taskRepository): Response
     {
         $offset = max(0, $page);
@@ -39,8 +51,9 @@ class TaskController extends AbstractController
         ]);
     }
 
+
     #[Route('/task/view/{id<\d+>}', methods: ['GET'], name: 'app_task_single_page')]
-    public function showTask(int $id,  TaskRepository $taskRepository): Response
+    public function showTask(int $id, TaskRepository $taskRepository): Response
     {
         $task = $taskRepository->find($id);
 
@@ -50,7 +63,75 @@ class TaskController extends AbstractController
             );
         }
 
-        return $this->render('task/index.html.twig', ['task' => $task]);
+        $uploadSolutionForm = $this->createForm(UploadSolutionType::class);
+
+        return $this->renderForm('task/index.html.twig', [
+            'task' => $task,
+            'form' => $uploadSolutionForm,
+        ]);
+    }
+
+    #[IsGranted('IS_AUTHENTICATED_FULLY')]
+    #[Route('/task/view/{id<\d+>}', name: 'app_solution_upload', methods: ['POST'])]
+    public function uploadSolution(
+        int                    $id,
+        Request                $request,
+        SolutionUploader       $solutionUploader,
+        TaskRepository         $taskRepository,
+        UserSolutionRepository $userSolutionRepository,
+    ): Response
+    {
+        $task = $taskRepository->find($id);
+        if (!$task) {
+            throw $this->createNotFoundException(
+                'Task with ID: ' . $id . ' not found'
+            );
+        }
+
+        $uploadSolutionForm = $this->createForm(UploadSolutionType::class);
+        $uploadSolutionForm->handleRequest($request);
+
+        // check is form is valid and submitted
+        if (!($uploadSolutionForm->isSubmitted() && $uploadSolutionForm->isValid())) {
+            return $this->renderForm('task/index.html.twig', [
+                'task' => $task,
+                'form' => $uploadSolutionForm,
+            ]);
+        }
+
+        /** @var User $user */
+        $user = $this->getUser();
+
+        /** @var UploadedFile $uploadedSolutionAsFile */
+        $uploadedSolutionAsFile = $uploadSolutionForm->get('file_solution')->getData();
+        $uploadedSolutionAsText = $uploadSolutionForm->get('text_solution')->getData();
+        $solutionExtension = $uploadSolutionForm->get('language')->getData();
+
+        // generate target directory
+        $targetDirectory = $this->getParameter('user_directory') . '/' . $user->getId();
+        $fileName = '';
+
+        // Upload user solution
+        try {
+            // Handle File User Solution
+            if ($uploadedSolutionAsFile) {
+                $fileName = $solutionUploader->uploadSolutionAsFile($uploadedSolutionAsFile, $id, $targetDirectory);
+            } // Handle Text User Solution
+            else if ($uploadedSolutionAsText) {
+                $fileName = $solutionUploader->uploadSolutionAsText($uploadedSolutionAsText, $id, $targetDirectory, $solutionExtension);
+            }
+        } catch (FileUploaderException $exception) {
+            $this->addFlash('error', "There are some errors during uploading the solution");
+            return $this->redirectToRoute('app_task_single_page', ['id' => $id]);
+        }
+
+        // Save to DataBase
+        $userSolution = new UserSolution($user, $task, $fileName);
+        $userSolutionRepository->save($userSolution, true);
+
+        $this->addFlash('success', MessageConstants::SUCCESSFULLY_UPLOADED);
+
+        return $this->redirectToRoute('app_task_single_page', ['id' => $id]);
     }
 
     #[IsGranted('ROLE_ADMIN')]
@@ -89,7 +170,7 @@ class TaskController extends AbstractController
         $taskTest = $taskForm->getData();
         $archive = $taskForm->get('tests')->getData();
         $inputPattern = $taskForm->get('input_pattern')->getData();
-        $outputPattern =  $taskForm->get('output_pattern')->getData();
+        $outputPattern = $taskForm->get('output_pattern')->getData();
 
         // if has no uploaded tests
         $testUploader->openZip($archive);
@@ -122,7 +203,6 @@ class TaskController extends AbstractController
 
             /** @var User $user */
             $user = $this->getUser();
-
             /** @var Task $task */
             $task = $taskForm->getData();
             $task->setPublished(0);
@@ -149,7 +229,7 @@ class TaskController extends AbstractController
 
     #[IsGranted('ROLE_ADMIN')]
     #[Route('/task/update/{id<\d{1,5}>}', methods: ['GET', 'POST'], name: 'app_task_update')]
-    public function updateTask(int $id, Request $request, TaskRepository $taskRepository, LoggerInterface $logg): Response
+    public function updateTask(int $id, Request $request, TaskRepository $taskRepository): Response
     {
         $task = $taskRepository->find($id);
 
@@ -170,7 +250,7 @@ class TaskController extends AbstractController
         $taskForm->handleRequest($request);
 
         // Handle and Save Form
-        if ($taskForm->isSubmitted()  && $taskForm->isValid()) {
+        if ($taskForm->isSubmitted() && $taskForm->isValid()) {
 
             /** @var Task $task */
             $task = $taskForm->getData();
@@ -187,7 +267,7 @@ class TaskController extends AbstractController
 
             return $this->redirectToRoute('app_task_single_page', ['id' => $id]);
         }
-
+ 
 
         return $this->renderForm('task/form.html.twig', [
             'task' => $task,

@@ -5,13 +5,7 @@
 {% endblock %}
 
 {% block body %}
-	<div
-		class="wrapper">
-		{# Flash Messages #}
-		{% for message in app.flashes('success') %}
-			{% include "_flash.html.twig" with { type: 'success', message: message } %}
-		{% endfor %}
-		{# End Flash Messages #}
+	<div class="wrapper">
 		<div class="task">
 			<div class="task__field task__name">
 				<h1>😃{{ task.name }}</h1>
@@ -56,5 +50,6 @@
 				{% endfor %}
 			</div>
 		</div>
+		{% include "task/_upload_solution.html.twig" with { form: form } %}
 	</div>
 {% endblock %}

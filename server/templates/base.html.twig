@@ -23,6 +23,10 @@
 			{{ include('header.html.twig') }}
 		{% endblock %}
 
+		{% block flash_messages %}
+			{% include "_flash_cases.html.twig" %}
+		{% endblock %}
+
 		{# Content section #}
 		{% block body %}{% endblock %}
 

@@ -1,0 +1,16 @@
+{# Success Flash Messages #}
+<div class="wrapper">
+	{% for message in app.flashes('success') %}
+		{% include "_flash.html.twig" with { type: 'success', message: message } %}
+	{% endfor %}
+
+	{# Warning Flash Messages #}
+	{% for message in app.flashes('warning') %}
+		{% include "_flash.html.twig" with { type: 'warning', message: message } %}
+	{% endfor %}
+
+	{# Error Flash Messages #}
+	{% for message in app.flashes('error') %}
+		{% include "_flash.html.twig" with { type: 'danger', message: message } %}
+	{% endfor %}
+</div>

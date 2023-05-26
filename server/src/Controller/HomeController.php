@@ -23,7 +23,7 @@ class HomeController extends AbstractController
             'controller_name' => 'HomeController',
         ]);
     }
-
+    
     #[Route('/faq', name: 'app_faq')]
     public function faq(): Response
     {
