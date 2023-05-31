@@ -9,8 +9,12 @@ module.exports = {
   ],
   theme: {
     extend: {
+      colors: {
+        "main": "#1D1D1DD9",
+      },
       fontFamily: {
         sans: ["Raleway","ui-sans-serif", "system-ui","-apple-system","Segoe UI","Roboto","Helvetica Neue","Noto Sans","Liberation Sans","Arial"],
+        mono: ["JetBrains Mono", "ui-monospace", "SFMono-Regular", "monospace"],
       },
       backgroundImage: {
        'body-image': "url('/public/images/background.jpg')"
@@ -21,7 +25,16 @@ module.exports = {
       plugin(function ({ addUtilities, addComponents, e, config }) {
         addComponents({
           '.btn-primary': {
-            "@apply py-2.5 px-7 bg-blue-600": {}
+            "@apply bg-blue-600": {}
+          },
+          '.btn-primary:hover': {
+            "@apply bg-blue-700": {}
+          },
+          '.btn-link': {
+            "@apply m-0 block px-7 py-2.5 bg-blue-600": {}
+          },
+          '.btn-link:hover': {
+            "@apply bg-blue-700": {}
           }
         })
       })

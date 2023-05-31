@@ -3,11 +3,12 @@
 	<head>
 		<meta charset="UTF-8">
 		<title>
-			{% block title %}Welcome!
-			{% endblock %}
+			{% block title %}{% endblock %} — Olymp
 		</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<link
 		rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/default.min.css">
 		{% block stylesheets %}
 			{{ encore_entry_link_tags('app') }}
 		{% endblock %}
@@ -19,7 +20,7 @@
 	<body class="bg-body-image">
 		{# Header section #}
 		{% block header %}
-			{{ include('header.html.twig') }}
+			{{ include('_header.html.twig') }}
 		{% endblock %}
 
 		{% block flash_messages %}

@@ -5,6 +5,8 @@
 
 // import fonts
 @import url('https://fonts.googleapis.com/css2?family=Raleway:wght@100;300;400;500;600;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100;300;400;500;600;700;800&display=swap');
+@import "code-highlight";
 
 body {
     @apply font-sans;
@@ -78,4 +80,12 @@ body {
 
 .tabs .tabs-content .active-tab {
     display: block;
+}
+
+.language-cpp {
+    background-color: transparent !important;
+}
+
+.indent {
+    padding-left: 20px;
 }
