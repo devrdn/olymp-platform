@@ -11,7 +11,8 @@ module.exports = {
     extend: {
       colors: {
         "main": "#1D1D1DD9",
-        "secondary": "rgba(29,29,29,0.90)"
+        "secondary": "rgba(29,29,29,0.90)",
+        "table": "rgba(63,63,63,0.8)"
       },
       fontFamily: {
         sans: ["Raleway","ui-sans-serif", "system-ui","-apple-system","Segoe UI","Roboto","Helvetica Neue","Noto Sans","Liberation Sans","Arial"],

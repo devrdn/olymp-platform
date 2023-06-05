@@ -49,45 +49,26 @@
                     <li><a href="/"
                            class="lg:hover:bg-transparent lg:hover:p-0 hover:bg-blue-400 hover:py-3 hover:px-4">Home</a>
                     </li>
-                    <li><a href="#">Task archive</a></li>
-                    <li><a href="#">About</a></li>
-                    <li><a href="#">FAQ</a></li>
+                    <li><a class="lg:hover:bg-transparent lg:hover:p-0 hover:bg-blue-400 hover:py-3 hover:px-4" href="{{ path('app_task_list') }}">Task archive</a></li>
+                    <li><a class="lg:hover:bg-transparent lg:hover:p-0 hover:bg-blue-400 hover:py-3 hover:px-4" href="{{ path('app_about') }}">About</a></li>
+                    <li><a class="lg:hover:bg-transparent lg:hover:p-0 hover:bg-blue-400 hover:py-3 hover:px-4" href="{{ path('app_faq') }}">FAQ</a></li>
+                    <li><a class="lg:hover:bg-transparent lg:hover:p-0 hover:bg-blue-400 hover:py-3 hover:px-4" href="https://github.com/devrdn/olymp-platform">Github</a></li>
                 </ul>
                 <ul id="action-buttons"
                     class="lg:flex lg:flex-row lg:items-center lg:space-x-8 lg:space-y-0 space-y-5 lg:p-0 p-5 text-center">
                     {% if not app.user %}
-                        <li><a href="/login">Sign In</a></li>
-                        <li><a class="btn-link inline lg:block" href="/register">Sign Up</a></li>
+                        <li><a href="{{ path('app_login') }}">Sign In</a></li>
+                        <li><a class="btn-link inline lg:block" href="{{ path('app_register') }}">Sign Up</a></li>
                     {% else %}
-                        <li class="hidden lg:block">{{ app.user }}</li>
-                        <li><a class="btn-link" href="/logout">Logout</a></li>
+                        <li class="hidden lg:block">
+                            <a class="flex flex-row items-center space-x-3">
+                                <span>Hi, {{ app.user }}</span>
+                            </a>
+                        </li>
+                        <li><a class="btn-link" href="{{ path('app_logout') }}">Logout</a></li>
                     {% endif %}
                 </ul>
             </div>
         </div>
     </nav>
 </header>
-
-{% block script %}
-    <script>
-        // Open and Close Burger Menu
-        const navMenu = document.querySelector("#nav-menu");
-        const backDrop = document.querySelector("#backdrop");
-
-        const navItems = [navMenu, backDrop]
-
-        const onOpen = () => {
-            navItems.forEach(item => {
-                item.classList.remove("hidden");
-            })
-            backDrop.addEventListener("click", onClose)
-        }
-
-        const onClose = () => {
-            navItems.forEach(item => {
-                item.classList.add("hidden");
-            })
-            backDrop.removeEventListener("click", onClose);
-        }
-    </script>
-{% endblock %}

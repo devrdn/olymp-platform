@@ -10,6 +10,7 @@
 // import other styles
 @import "code-highlight";
 
+
 body {
     box-sizing: border-box;
     @apply font-sans;
@@ -91,4 +92,21 @@ body {
 
 .indent {
     padding-left: 20px;
+}
+
+html, body {
+    height: 100%;
+}
+body {
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex: 1 0 auto;
+}
+#footer {
+    overflow-y: hidden;
+    height: 100%;
+    flex-shrink: 0;
 }

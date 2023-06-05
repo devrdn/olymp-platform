@@ -1,37 +1,51 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}
-	Tasks
+    Tasks
 {% endblock %}
 
 {% block body %}
-	<div class="wrapper">
-		<div class="task-list">
-			<div class="task-list__title">
-				<h1>All tasks</h1>
-			</div>
-			<div class="task-list__tasks">
-				<ul>
-					{% for task in tasks %}
-						<li>
-							<a href="{{ path('app_task_single_page', { id: task.id }) }}">{{ task.name }}</a>
-						</li>
-					{% else %}
-						<div>Задания найдены не были</div>
-					{% endfor %}
-					{% if previous >= 0 %}
-						+
-						<a href="{{ path('app_task_list', { page: previous }) }}">Previous</a>
-						+
-					{% endif %}
-					+
-					{% if next < tasks|length %}
-						+
-						<a href="{{ path('app_task_list', { page: next }) }}">Next</a>
-						+
-					{% endif %}
-				</ul>
-			</div>
-		</div>
-	</div>
+    <div id="page-task_list" class="mx-auto">
+        <h1 class="text-6xl text-center font-bold">Task Archive</h1>
+        <div id="table" class="mt-20">
+            <table class="table-fixed w-[75%] mx-auto">
+                <thead class="text-xl bg-main">
+                <tr class="border-b-2 border-gray-600">
+                    <th class="font-semibold py-3 px-4">Title</th>
+                    <th class="font-semibold py-3 px-4">Difficulty</th>
+                    <th class="font-semibold py-3 px-4">Solved</th>
+                    <th class="font-semibold py-3 px-4">Source</th>
+                    <th class="font-semibold py-3 px-4">Author</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for task in tasks %}
+                    <tr class="{{ loop.index % 2 == 0 ? "bg-table" : "bg-main" }} text-lg">
+                        <th class="font-medium p-3"><a
+                                    href="{{ path('app_task_single_page', { id: task.id }) }}">{{ task.name }}</a></th>
+                        <th class="font-medium p-3">{% include '/task/partials/_difficulty.html.twig' with { difficulty: task.taskMeta.complexity } %}</th>
+                        <th class="font-medium p-3">{{ task.taskMeta.solved }}</th>
+                        <th class="font-medium p-3">{{ task.taskMeta.source }}</th>
+                        <th class="font-medium p-3">{{ task.taskMeta.author }}</th>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div id="pagination" class="mt-10 text-center">
+            <div class="flex flex-row items-center justify-center space-x-4">
+                {% if previous >= 0 %}
+                    <a class="btn-primary py-3 px-4" href="{{ path('app_task_list', { page: previous }) }}">
+                        Previous
+                    </a>
+                {% endif %}
+                {% if next < tasks|length or previous >= 0 %}
+                    <p class="bg-blue-500 py-3 px-4">{{ next }}</p>
+                {% endif %}
+                {% if next < tasks|length %}
+                    <a class="btn-primary py-3 px-4" href="{{ path('app_task_list', { page: next }) }}">Next</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
 {% endblock %}

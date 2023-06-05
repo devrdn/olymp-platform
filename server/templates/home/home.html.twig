@@ -3,9 +3,9 @@
 {% block title %}Home{% endblock %}
 
 {% block body %}
-    <section id="greeting" class="mx-24">
-        <div class="flex flex-row items-center justify-between">
-            <div class="w-1/2 space-y-8">
+    <section id="greeting">
+        <div id="greeting-text" class="flex md:flex-row flex-col items-center justify-between">
+            <div class="md:w-1/2 w-full md:space-y-8 space-y-5">
                 <p class="text-6xl font-bold">Hello, world!</p>
                 <p class="text-lg font-medium">
                     Welcome to our platform for programming competitions! Here you will find all the information you
@@ -21,13 +21,13 @@
                     </svg>
                 </a>
             </div>
-            <div id="code">
+            <div id="code" class="md:w-auto md:mt-0 mt-5 w-full">
                 <div class="bg-main">
                     <div id="code-header">
                         <div class="flex flex-row items-center py-4 px-3 position-relative space-x-2">
-                            <div class="h-[19px] w-[19px] rounded-full bg-blue-700 cursor-pointer"></div>
-                            <div class="h-[19px] w-[19px] rounded-full bg-teal-800 cursor-pointer"></div>
-                            <div class="h-[19px] w-[19px] rounded-full bg-emerald-700 cursor-pointer"></div>
+                            <div class="h-[15px] w-[15px] rounded-full bg-blue-700 cursor-pointer"></div>
+                            <div class="h-[15px] w-[15px] rounded-full bg-teal-800 cursor-pointer"></div>
+                            <div class="h-[15px] w-[15px] rounded-full bg-emerald-700 cursor-pointer"></div>
                         </div>
                     </div>
                     <hr class="border-slate-600"/>
@@ -39,20 +39,37 @@
         </div>
     </section>
 
-    <section class="bg-main absolute right-0 left-0 mt-20">
-        <div class="container mx-auto text-lg py-28 space-y-3 font-semibold">
-            <p>Dear participants of Programming Olympiads,</p>
-            <p>Welcome to our website dedicated to organizing and conducting programming Olympiads! We are happy to welcome
-                you to this platform, where you can improve your skills and become part of our international programming
-                community.</p>
-            <p>Our goal is to provide you with the opportunity to develop your skills and participate in exciting
-                programming competitions where you can showcase your talents and receive recognition for your achievements.
-                We are sure that our website will help you become the best programmers and achieve great success in the
-                future.</p>
-            <p>Here you will find information about the upcoming programming Olympiads, the rules and format of the
-                competitions, as well as useful materials and articles that will help you prepare for the competitions.</p>
+    <section id="contests" class="mt-24">
+        <div class="space-y-10">
+            <h1 class="text-5xl font-bold">Contests</h1>
+            <div class="grid lg:grid-cols-3 gap-5 md:grid-cols-2 grid-cols-1">
+                {% include '/home/partials/_contest.html.twig' with { contest_id: 1 } %}
+                {% include '/home/partials/_contest.html.twig' with { contest_id: 2 } %}
+                {% include '/home/partials/_contest.html.twig' with { contest_id: 3 } %}
+                {% include '/home/partials/_contest.html.twig' with { contest_id: 4 } %}
+                {% include '/home/partials/_contest.html.twig' with { contest_id: 4 } %}
+                {% include '/home/partials/_contest.html.twig' with { contest_id: 4 } %}
+            </div>
         </div>
     </section>
+
+
+    {#    <section id="about" class="flex relative"> #}
+    {#        <div class="bg-main absolute top-5 left-0 right-0"> #}
+    {#            <div class="md:container relative md:mx-auto mx-5  text-lg md:py-28 py-10 space-y-3 font-semibold"> #}
+    {#                <p>Dear participants of Programming Olympiads,</p> #}
+    {#                <p>Welcome to our website dedicated to organizing and conducting programming Olympiads! We are happy to welcome #}
+    {#                    you to this platform, where you can improve your skills and become part of our international programming #}
+    {#                    community.</p> #}
+    {#                <p>Our goal is to provide you with the opportunity to develop your skills and participate in exciting #}
+    {#                    programming competitions where you can showcase your talents and receive recognition for your achievements. #}
+    {#                    We are sure that our website will help you become the best programmers and achieve great success in the #}
+    {#                    future.</p> #}
+    {#                <p>Here you will find information about the upcoming programming Olympiads, the rules and format of the #}
+    {#                    competitions, as well as useful materials and articles that will help you prepare for the competitions.</p> #}
+    {#            </div> #}
+    {#        </div> #}
+    {#    </section> #}
 {% endblock %}
 
 
