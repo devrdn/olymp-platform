@@ -12,6 +12,12 @@
   * user
     * {user_id}
   * tmp
+    * {worker_id}
+      * user_solution
+      * compiled_solution
+      * input_data
+      * output_data
+      * pattern_data
   * logs
 
 ## `data` directory
@@ -31,6 +37,12 @@ Contest directory stores files received from contest.
 
 ## `tmp` directory
 tmp directory stores tmp files (e.g. object files)
+* `{worker_id}` - each worker creates a folder where it works: compile, execute and evaluate
+  * `user_solution` - a sorce code file copied from user directory, for evaluation
+  * `compiled_solution` - compiled app (if necessary) from source code
+  * `input_data` - input data file for app
+  * `output_data` - output data file from app
+  * `pattern_data` - expected result
 
 ## `user` directory
 user directory stores solved problems
