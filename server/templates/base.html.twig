@@ -18,14 +18,15 @@
         {{ encore_entry_script_tags('app') }}
     {% endblock %}
 </head>
-<body class="bg-neutral-800">
+<body class="bg-back">
 {# Header section #}
 {% block header %}
     {{ include('_header.html.twig') }}
 {% endblock %}
 
 {# Content section #}
-<main class="lg:container lg:mx-auto mx-5 lg:mt-48 md:mt-24 mt-16 text-white grow">
+<main class="lg:container lg:mx-auto mx-5 lg:mt-28 md:mt-24 mt-16 text-white grow">
+
     {% block flash_messages %}
         {% include "_flash_cases.html.twig" %}
     {% endblock %}

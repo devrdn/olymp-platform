@@ -23,7 +23,7 @@ class RegistrationFormType extends AbstractType
         $builder
             ->add('email', EmailType::class, [
                 'label' => 'Email',
-                'attr' => ['class' => 'form-control'],
+                'attr' => ['class' => 'text-input'],
                 'required' => true,
                 'constraints' => [
                     new NotBlank([
@@ -41,7 +41,7 @@ class RegistrationFormType extends AbstractType
             ->add('name', TextType::class, [
                 'label' => 'Your name',
                 'help' => 'The field must contain min of 2 characters and max of 255',
-                'attr' => ['class' => 'form-control'],
+                'attr' => ['class' => 'text-input'],
                 'required' => true,
                 'constraints' => [
                     new NotBlank([
@@ -57,7 +57,7 @@ class RegistrationFormType extends AbstractType
             ])
             ->add('username', TextType::class, [
                 'label' => 'Username',
-                'attr' => ['class' => 'form-control'],
+                'attr' => ['class' => 'text-input'],
                 'required' => false,
                 'constraints' => [
                     new Length([
@@ -79,7 +79,7 @@ class RegistrationFormType extends AbstractType
             ->add('plainPassword', RepeatedType::class, [
                 'first_options'  => ['label' => 'Password'],
                 'second_options' => ['label' => 'Repeat Password'],
-                'options' => ['attr' => ['class' => 'form-control', 'autocomplete' => 'new-password']],
+                'options' => ['attr' => ['class' => 'text-input', 'autocomplete' => 'new-password']],
                 'invalid_message' => 'The password fields must match.',
                 'type' => PasswordType::class,
                 'mapped' => false,

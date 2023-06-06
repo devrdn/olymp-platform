@@ -10,13 +10,13 @@
             <form action="{{ path('app_login') }}" method="POST">
                 <div class="flex flex-col">
                     <label class="font-semibold" for="email">Email:</label>
-                    <input class="w-full outline-none p-2 bg-transparent border-b-2 border-white focus:border-blue-500 duration-300 easy-in-out"
+                    <input class="text-input"
                            type="text" id="email" name="_email" value="{{ last_email }}">
                 </div>
 
                 <div class="form-group mt-4">
                     <label class="font-semibold" for="password">Password:</label>
-                    <input class="w-full outline-none p-2 bg-transparent border-b-2 border-white focus:border-blue-500 duration-300 easy-in-out"
+                    <input class="text-input"
                            type="password" id="password" name="_password">
                 </div>
 

@@ -5,70 +5,62 @@
 {% endblock %}
 
 {% block body %}
-    <div class="wrapper">
-        <div class="task">
-            <div id="task_status"></div>
-            <div class="task__field task__name">
-                <h1>😃{{ task.name }}</h1>
+    <div class="bg-main max-w-3xl mx-auto px-24 py-10">
+        <div id="task" class="task-{{ task.id }} flex flex-col text-lg">
+            <h1 id="task-name" class="font-bold text-center text-5xl">{{ task.name }}</h1>
+            <div id="task-description" class="mt-4">
+                <h2>Description</h2>
+                <hr class="border border-blue-500"/>
+                <div class="text-xl mt-4 font-semibold">{{ task.description | raw }}</div>
             </div>
-
-            <div class="task__field task__description">
-                <h3>Description</h3>
-                <hr>
-                <h7>{{ task.description | raw }}</h7>
+            <div id="task-time_limit" class="mt-4">
+                <h2>Time Limit</h2>
+                <hr class="border border-blue-500"/>
+                <div class="text-xl mt-4 font-semibold">{{ task.timeLimit }}s</div>
             </div>
-
-            <div class="task__field task__limits">
-                <h3>Time And Memory Limit</h3>
-                <hr>
-                <h7>Time Limit:
-                    {{ task.timeLimit }}, Memory Limit:
-                    {{ task.memoryLimit }}</h7>
+            <div id="task-mem_limit" class="mt-4">
+                <h2>Memory Limit</h2>
+                <hr class="border border-blue-500"/>
+                <div class="text-xl mt-4 font-semibold">{{ task.memoryLimit }}mb</div>
             </div>
-
-            <div class="task__field task__example">
-                <h3>Example Input and Output</h3>
-                <hr>
-                <h7>Example Input:
-                    {{ task.exampleInput|raw }}Example Output:
-                    {{ task.exampleOutput|raw }}</h7>
+            <div id="task-example" class="flex flex-row gap-5 mt-4">
+                <div class="w-full">
+                    <h2>Example Input</h2>
+                    <hr class="border border-blue-500"/>
+                    <div class="text-xl mt-4 font-semibold">{{ task.exampleInput|raw }}</div>
+                </div>
+                <div class="w-full">
+                    <h2>Example Input</h2>
+                    <hr class="border border-blue-500"/>
+                    <div class="text-xl mt-4 font-semibold">{{ task.exampleInput|raw }}</div>
+                </div>
             </div>
-
-            <div class="task__field task__example">
-                <h3>Author</h3>
-                <hr>
-                <h7>{{ task.taskMeta.author }}</h7>
+            <div id="task-author" class="mt-4">
+                <h2>Author</h2>
+                <hr class="border border-blue-500"/>
+                <div class="text-xl mt-4 font-semibold">{{ task.taskMeta.author }}</div>
             </div>
-
-            <div class="task__field task__example">
-                <h3>Created</h3>
-                <hr>
-                <h7>{{ task.taskMeta.createdAt | date("Y-m-d H:i:s") }}</h7>
-            </div>
-
-            <div class="task__field task__example">
-                <h3>Input and Output files</h3>
-                <hr>
-                {% for task in task.taskTests %}
-                    Input:
-                    {{ task.inputData }}
-                    | Output:
-                    {{ task.outputData }}<br>
-                {% endfor %}
+            <div id="task-upload" class="mt-10">
+                {% include "task/_upload_solution.html.twig" with { form: form } %}
             </div>
         </div>
-        {% include "task/_upload_solution.html.twig" with { form: form } %}
-
-
-        <table>
-            <tr>
-                <td>№</td>
-                <td>Status</td>
-            </tr>
-            <tbody id="solutions">
-            </tbody>
-        </table>
     </div>
+    {% if app.user %}
+    <table class="table-fixed max-w-3xl mx-auto px-24 py-10 w-full mt-10">
+        <thead class="text-xl bg-main">
+        <tr class="border-b-2 border-gray-600">
+            <th class="font-semibold py-3 px-4">№</th>
+            <th class="font-semibold py-3 px-4">Status</th>
+        </tr>
+        </thead>
+        <tbody id="solutions">
+        <tr class="font-medium bg-main text-center text-lg">
+            <td class="animate-pulse p-3">Loading...</td>
+            <td class="animate-pulse p-3">Loading...</td>
+        </tr>
+        </tbody>
+    </table>
+{% endif %}
 {% endblock %}
 
 {% block script %}
@@ -84,27 +76,25 @@
             const onSuccess = (status) => {
                 status.json().then(item => {
                     let html = "";
-                    console.log(item.tasks)
                     const len = item.tasks.length;
 
                     item.tasks.forEach((item, i) => {
-                        console.log(item.task_status.name)
-                        html += `<tr><td>${len - i}</td><td>${item.task_status.name}</td><tr>`;
+                        const extraClass = i % 2 === 0 ? "bg-table" : "bg-main";
+                        html += `<tr class="font-medium  ${extraClass} text-center text-lg"><td class="p-3">${len - i}</td><td  class="p-3">${item.task_status.name}</td><tr>`;
                     })
 
                     taskStatus.innerHTML = html;
 
-                    //if (item.last.value === 3 || item.last.value === 11) {
-                    //    clearInterval(interval);
-                    //}
                 }).catch(() => {
+                    taskStatus.innerHTML = `<tr class="font-medium bg-main text-center text-lg"><td class="p-3">-</td><td  class="p-3">-</td><tr>`;
                     clearInterval(interval);
                 })
             }
 
             const onError = (status) => {
+                console.log("FDs");
                 status.json().then(item => {
-                    taskStatus.innerHTML = JSON.stringify(item);
+                    taskStatus.innerHTML = `<tr class="font-medium  ${extraClass} text-center text-lg"><td class="p-3">-</td><td  class="p-3">-</td><tr>`;
                 });
                 clearInterval(interval);
             }

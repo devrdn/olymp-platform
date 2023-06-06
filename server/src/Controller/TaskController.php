@@ -126,6 +126,7 @@ class TaskController extends AbstractController
     }
 
 
+    #[IsGranted('ROLE_ADMIN')]
     #[Route('/task/addtest/{id<\d+>}', methods: ['POST', 'GET'], name: 'app_task_add_test')]
     public function addTest(int $id, Request $request, TaskRepository $taskRepository, TestUploader $testUploader): Response
     {
@@ -179,6 +180,7 @@ class TaskController extends AbstractController
     }
 
 
+    #[IsGranted('ROLE_ADMIN')]
     #[Route('/task/create', methods: ['GET', 'POST'], name: 'app_task_create')]
     public function createTask(Request $request, TaskRepository $taskRepository, TaskMetaRepository $taskMetaRepository): Response
     {
@@ -214,6 +216,7 @@ class TaskController extends AbstractController
         ]);
     }
 
+    #[IsGranted('ROLE_ADMIN')]
     #[Route('/task/update/{id<\d{1,5}>}', methods: ['GET', 'POST'], name: 'app_task_update')]
     public function updateTask(int $id, Request $request, TaskRepository $taskRepository): Response
     {
