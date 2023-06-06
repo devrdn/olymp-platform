@@ -1,0 +1,112 @@
+// add tailwind directives
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+// import fonts
+@import url('https://fonts.googleapis.com/css2?family=Raleway:wght@100;300;400;500;600;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100;300;400;500;600;700;800&display=swap');
+
+// import other styles
+@import "code-highlight";
+
+
+body {
+    box-sizing: border-box;
+    @apply font-sans;
+}
+
+.form-control-dark {
+    border-color: var(--bs-gray);
+}
+
+.form-control-dark:focus {
+    border-color: #fff;
+    box-shadow: 0 0 0 0.25rem rgba(255, 255, 255, 0.25);
+}
+
+.text-small {
+    font-size: 85%;
+}
+
+.dropdown-toggle {
+    outline: 0;
+}
+
+.wrapper {
+    margin: 1em auto;
+    max-width: 800px;
+    width: 95%;
+    font: 18px / 1.5 sans-serif;
+}
+
+.wrapper code {
+    background: #f5f5f5;
+    padding: 2px 6px;
+}
+
+.tabs .tabs-trigger {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    padding-left: 12px;
+    background-color: #5ea8fc;
+    border-bottom: 1px solid #539ff6;
+}
+
+.tabs .tabs-trigger .tabs-trigger__item {
+    color: white;
+    text-decoration: none;
+    padding: 10px;
+    font-weight: 400;
+}
+
+.tabs .tabs-trigger .tabs-trigger__item:focus {
+    border: none;
+    outline: none;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+
+.tabs .tabs-trigger .active-trigger {
+    background-color: #0876f350;
+}
+
+.tabs .tabs-content {
+    padding-left: 12px;
+    padding-right: 12px;
+    padding-bottom: 12px;
+}
+
+.tabs .tabs-content .tabs-content__item {
+    display: none;
+}
+
+.tabs .tabs-content .active-tab {
+    display: block;
+}
+
+.language-cpp {
+    background-color: transparent !important;
+}
+
+.indent {
+    padding-left: 20px;
+}
+
+html, body {
+    height: 100%;
+}
+body {
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex: 1 0 auto;
+}
+#footer {
+    overflow-y: hidden;
+    height: 100%;
+    flex-shrink: 0;
+}

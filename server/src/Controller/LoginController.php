@@ -21,7 +21,7 @@ class LoginController extends AbstractController
         // get last email
         $lastEmail = $authenticationUtils->getLastUsername();
 
-        return $this->render('login/index.html.twig', [
+        return $this->render('security/login.html.twig', [
             'last_email' => $lastEmail,
             'auth_error' => $error,
         ]);

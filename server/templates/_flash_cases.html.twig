@@ -1,5 +1,5 @@
 {# Success Flash Messages #}
-<div class="wrapper">
+<div id="flash_message">
 	{% for message in app.flashes('success') %}
 		{% include "_flash.html.twig" with { type: 'success', message: message } %}
 	{% endfor %}

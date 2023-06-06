@@ -7,6 +7,7 @@ use DateTime;
 use DateTimeImmutable;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Ignore;
 
 #[ORM\Entity(repositoryClass: TaskMetaRepository::class)]
 class TaskMeta
@@ -16,6 +17,7 @@ class TaskMeta
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Ignore]
     #[ORM\OneToOne(inversedBy: 'taskMeta', cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(onDelete: "CASCADE", nullable: false)]
     private ?Task $task = null;

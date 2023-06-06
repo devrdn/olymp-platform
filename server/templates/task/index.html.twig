@@ -58,26 +58,46 @@
             </div>
         </div>
         {% include "task/_upload_solution.html.twig" with { form: form } %}
+
+
+        <table>
+            <tr>
+                <td>№</td>
+                <td>Status</td>
+            </tr>
+            <tbody id="solutions">
+            </tbody>
+        </table>
     </div>
 {% endblock %}
 
 {% block script %}
+    <script src="/utils/tabs.js"></script>
     {% if app.user %}
         <script>
             const userId = {{ app.user.id }};
             const taskId = {{ task.Id }};
-            const taskStatus = document.querySelector("#task_status");
+            const taskStatus = document.querySelector("#solutions");
+
+            console.log(taskStatus)
 
             const onSuccess = (status) => {
                 status.json().then(item => {
-                    taskStatus.innerHTML = `
-                        <p> ${item.task_status.name} </p>
-                    `;
+                    let html = "";
+                    console.log(item.tasks)
+                    const len = item.tasks.length;
 
-                    if (item.task_status.value === 3 || item.task_status.value === 11) {
-                        clearInterval(interval);
-                    }
-                }).catch(err => {
+                    item.tasks.forEach((item, i) => {
+                        console.log(item.task_status.name)
+                        html += `<tr><td>${len - i}</td><td>${item.task_status.name}</td><tr>`;
+                    })
+
+                    taskStatus.innerHTML = html;
+
+                    //if (item.last.value === 3 || item.last.value === 11) {
+                    //    clearInterval(interval);
+                    //}
+                }).catch(() => {
                     clearInterval(interval);
                 })
             }
@@ -90,7 +110,7 @@
             }
 
             const handleInfo = (onSuccess, onError) => {
-                fetch(`/api/v1/status/${userId}/${taskId}`).then((status) => {
+                fetch(`/api/v1/tasks/${userId}/${taskId}`).then((status) => {
                     onSuccess(status);
                 }).catch((err) => {
                     onError(err);
