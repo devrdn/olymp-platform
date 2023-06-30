@@ -45,8 +45,8 @@ php bin/console doctrine:database:create
 ```
 3. Make migration to database
 ```shell
-php bin/console doctrine:migration:diff
-php bin/console doctrine:migration:migrate
+php bin/console doctrine:migrations:diff
+php bin/console doctrine:migrations:migrate
 ```
 4. Install JS dependencies
 ```shell
