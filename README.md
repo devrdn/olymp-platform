@@ -51,7 +51,7 @@ php bin/console doctrine:migrations:migrate
 4. Install JS dependencies
 ```shell
 npm install
-npx webpack
+npx run build
 ```
 
 ### Start Server
