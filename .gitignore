@@ -31,4 +31,4 @@
 /nbproject/
 
 ###> migrations ###
-/server/migrations/
+/server/migrations/*
