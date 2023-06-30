@@ -16,6 +16,7 @@ Olymp Platform is an automated platform for informatics competitions.
 To install and launch platform, you need:
 
 ### Install
+
 1. Install [Symfony](https://symfony.com/doc/current/setup.html) from official repository
 2. Clone project from github
 ```shell
@@ -29,10 +30,14 @@ php composer.phar update
 ```
 
 ### Database Migration
+
 1. Connect your database in .env file:
 ```ini
 # Example for mysql
 DATABASE_URL="mysql://<user>:<password>@<ip>:<port>/<database>?serverVersion=<db-version>"
+# Example for sqlite
+# DATABASE_URL="sqlite:///%kernel.project_dir%/var/olymp.db.sqlite"
+MESSENGER_TRANSPORT_DSN=doctrine://default
 ```
 2. Create database
 ```shell
@@ -40,15 +45,22 @@ php bin/console doctrine:database:create
 ```
 3. Make migration to database
 ```shell
+php bin/console doctrine:migration:diff
 php bin/console doctrine:migration:migrate
 ```
-
+4. Install JS dependencies
+```shell
+npm install
+npx webpack
+```
 
 ### Start Server
+
 ```shell
 symfony server:start
 ```
 
 ## Todo (README.md)
+
 1. Makefile description (install project)
 2. Start with docker

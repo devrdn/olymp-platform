@@ -28,3 +28,7 @@
 
 ###> data folder ###
 /data
+/nbproject/
+
+###> migrations ###
+/server/migrations/
