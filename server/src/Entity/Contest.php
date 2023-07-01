@@ -19,8 +19,8 @@ class Contest
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $author = null;
+    #[ORM\Column]
+    private ?int $author = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $startTime = null;
@@ -56,12 +56,12 @@ class Contest
         return $this;
     }
 
-    public function getAuthor(): ?string
+    public function getAuthor(): ?int
     {
         return $this->author;
     }
 
-    public function setAuthor(string $author): self
+    public function setAuthor(int $author): self
     {
         $this->author = $author;
 

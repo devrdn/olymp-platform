@@ -1,14 +1,9 @@
-// add tailwind directives
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
 // import fonts
 @import url('https://fonts.googleapis.com/css2?family=Raleway:wght@100;300;400;500;600;800;900&display=swap');
 @import "~bootstrap/scss/bootstrap";
 
 body {
-    background-color: white;
+    background-color: #f5f5f5;
     @apply font-sans;
 }
 
@@ -84,55 +79,55 @@ body {
 
 /* VSC Menu */
 .container {
-  max-width: 1200px;
-  margin: 0 auto;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
 header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 15px 0;
-  border-bottom: 1px solid #ddd;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 0;
+    border-bottom: 1px solid #ddd;
 }
 
 header a {
-  color: #333;
-  text-decoration: none;
+    color: #333;
+    text-decoration: none;
 }
 
 header .nav {
-  display: flex;
-  align-items: center;
-  list-style: none;
+    display: flex;
+    align-items: center;
+    list-style: none;
 }
 
 header .nav .nav-item {
-  margin-right: 10px;
+    margin-right: 10px;
 }
 
 header .nav .nav-link {
-  color: #333;
+    color: #333;
 }
 
 header .nav .dropdown-menu {
-  display: none;
-  position: absolute;
-  background-color: #fff;
-  padding: 10px;
-  list-style: none;
-  margin: 0;
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    display: none;
+    position: absolute;
+    background-color: #fff;
+    padding: 10px;
+    list-style: none;
+    margin: 0;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
 }
 
 header .nav .dropdown:hover .dropdown-menu {
-  display: block;
+    display: block;
 }
 
 header .nav .dropdown-menu .dropdown-item {
-  margin-bottom: 5px;
+    margin-bottom: 5px;
 }
 
 header .nav .dropdown-menu .dropdown-item:last-child {
-  margin-bottom: 0;
+    margin-bottom: 0;
 }

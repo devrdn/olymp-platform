@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Create Contest
+{% endblock %}
+
+{% block body %}
+    <div class="wrapper">
+        {{ form_start(form) }}
+        <div class="form-group row">
+            <div class="col-sm">{{ form_label(form.name) }}</div>
+            <div class="col-sm">{{ form_widget(form.name) }}</div>
+            <span>{{ form_errors(form.name) }}</span>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-sm">{{ form_label(form.startTime) }}</div>
+            <div class="col-sm">{{ form_widget(form.startTime) }}</div>
+            <span>{{ form_errors(form.startTime) }}</span>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-sm">{{ form_label(form.endTime) }}</div>
+            <div class="col-sm">{{ form_widget(form.endTime) }}</div>
+            <span>{{ form_errors(form.endTime) }}</span>
+        </div>
+
+        <div class="form-group">{{ form_widget(form.save) }}</div>
+        {{ form_row(form._token) }}
+
+        {{ form_errors(form) }}
+
+        {{ form_end(form,{'render_rest':false}) }}
+    </div>
+{% endblock %}

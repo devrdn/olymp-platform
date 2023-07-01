@@ -31,6 +31,9 @@
                         +
                     {% endif %}
                 </ul>
+                {% if is_granted('ROLE_ADMIN') %}
+                <a href="{{ path('app_contest_create') }}" class="btn btn-primary">Add Contest</a>
+            {% endif %}
             </div>
         </div>
     </div>
