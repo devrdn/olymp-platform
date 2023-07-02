@@ -14,7 +14,7 @@
                 <ul>
                     {% for contest in contests %}
                         <li>
-                            <a href="{{ path('app_contest_single_page', { id: contest.id }) }}">{{ contest.name }}</a>
+                            <a href="{{ path('app_contest_view', { id: contest.id }) }}">{{ contest.name }}</a>
                         </li>
                     {% else %}
                         <div>No contests found</div>

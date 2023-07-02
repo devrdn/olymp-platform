@@ -45,6 +45,7 @@ php bin/console doctrine:database:create
 ```
 3. Make migration to database
 ```shell
+mkdir -p migrations
 php bin/console doctrine:migrations:diff
 php bin/console doctrine:migrations:migrate
 ```
