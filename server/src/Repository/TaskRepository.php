@@ -42,7 +42,7 @@ class TaskRepository extends ServiceEntityRepository
         }
     }
 
-    public function getTaskPaginator(int $offset)
+    public function getPaginator(int $offset)
     {
         $query = $this->createQueryBuilder('c')
             ->setMaxResults(self::_TASKS_PER_PAGE)
