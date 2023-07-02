@@ -28,7 +28,7 @@ class ContestController extends AbstractController
         ]);
     }
     
-    #[Route('/contest/view/{id<\d+>}', methods: ['GET'], name: 'app_contest_single_page')]
+    #[Route('/contest/view/{id<\d+>}', methods: ['GET'], name: 'app_contest_view')]
     public function view(int $id, ContestRepository $contestRepository): Response
     {
         $contest = $contestRepository->find($id);
