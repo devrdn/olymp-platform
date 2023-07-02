@@ -1,6 +1,3 @@
-*.png
-
-
 ###> symfony/framework-bundle ###
 /server/.env
 /server/.env.test
