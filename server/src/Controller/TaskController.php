@@ -29,7 +29,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class TaskController extends AbstractController
 {
     #[Route('/task/{page<\d+>}', methods: ['GET'], name: 'app_task_list', defaults: ['page' => 0])]
-    public function showAllTasks(int $page, TaskRepository $taskRepository): Response
+    public function list(int $page, TaskRepository $taskRepository): Response
     {
         $offset = max(0, $page);
         $paginator = $taskRepository->getPaginator($offset);
@@ -45,8 +45,8 @@ class TaskController extends AbstractController
     }
 
 
-    #[Route('/task/view/{id<\d+>}', methods: ['GET'], name: 'app_task_single_page')]
-    public function showTask(int $id, TaskRepository $taskRepository): Response
+    #[Route('/task/view/{id<\d+>}', methods: ['GET'], name: 'app_task_view')]
+    public function view(int $id, TaskRepository $taskRepository): Response
     {
         $task = $taskRepository->find($id);
 
@@ -183,7 +183,7 @@ class TaskController extends AbstractController
 
     #[IsGranted('ROLE_ADMIN')]
     #[Route('/task/create', methods: ['GET', 'POST'], name: 'app_task_create')]
-    public function createTask(Request $request, TaskRepository $taskRepository, TaskMetaRepository $taskMetaRepository): Response
+    public function create(Request $request, TaskRepository $taskRepository, TaskMetaRepository $taskMetaRepository): Response
     {
         $task = new Task();
 
@@ -222,7 +222,7 @@ class TaskController extends AbstractController
 
     #[IsGranted('ROLE_ADMIN')]
     #[Route('/task/update/{id<\d{1,5}>}', methods: ['GET', 'POST'], name: 'app_task_update')]
-    public function updateTask(int $id, Request $request, TaskRepository $taskRepository): Response
+    public function update(int $id, Request $request, TaskRepository $taskRepository): Response
     {
         $task = $taskRepository->find($id);
 
