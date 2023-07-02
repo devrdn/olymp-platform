@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Contest;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -16,6 +17,8 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class ContestRepository extends ServiceEntityRepository
 {
+    public const _CONTESTS_PER_PAGE = 10;
+    
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Contest::class);
@@ -37,6 +40,16 @@ class ContestRepository extends ServiceEntityRepository
         if ($flush) {
             $this->getEntityManager()->flush();
         }
+    }
+    
+    public function getPaginator(int $offset)
+    {
+        $query = $this->createQueryBuilder('c')
+            ->setMaxResults(self::_CONTESTS_PER_PAGE)
+            ->setFirstResult($offset)
+            ->getQuery();
+
+        return new Paginator($query);
     }
 
 //    /**

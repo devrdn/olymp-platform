@@ -15,23 +15,16 @@ use App\Form\TaskTestType;
 use App\Form\UploadSolutionType;
 use App\Repository\TaskRepository;
 use App\Repository\TaskMetaRepository;
-use App\Repository\TaskTestRepository;
 use App\Repository\UserSolutionRepository;
 use App\Services\TestUploader;
-use App\Services\FileUploader;
 use App\Services\SolutionUploader;
 use DateTimeImmutable;
-use Exception;
-use Psr\Log\LoggerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Http\Attribute\CurrentUser;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
 class TaskController extends AbstractController
 {
