@@ -82,45 +82,6 @@ class TaskType extends AbstractType
                     ])
                 ],
             ])
-            ->add('example_input', TextareaType::class, [
-                'label' => 'Example Input',
-                'required' => false,
-                'attr' => ['class' => 'form-control'],
-                'constraints' => [
-                    new Length([
-                        'min' => 1,
-                        'max' => 2000,
-                        'minMessage' => 'Min. Length of this field: {{ limit }}',
-                        'maxMessage' => 'Max. length of this field: {{ limit }}',
-                    ])
-                ]
-            ])
-            ->add('example_output', TextareaType::class, [
-                'label' => 'Example Output',
-                'attr' => ['class' => 'form-control'],
-                'required' => false,
-                'constraints' => [
-                    new Length([
-                        'min' => 1,
-                        'max' => 2000,
-                        'minMessage' => 'Min. Length of this field: {{ limit }}',
-                        'maxMessage' => 'Max. length of this field: {{ limit }}',
-                    ])
-                ]
-            ])
-            ->add('restriction', TextareaType::class, [
-                'label' => 'Restriction',
-                'attr' => ['class' => 'form-control'],
-                'required' => false,
-                'constraints' => [
-                    new Length([
-                        'min' => 1,
-                        'max' => 1000,
-                        'minMessage' => 'Min. Length of this field: {{ limit }}',
-                        'maxMessage' => 'Max. length of this field: {{ limit }}',
-                    ])
-                ]
-            ])
             ->add('published', CheckboxType::class, [
                 'label' => 'Published',
                 'required' => false,

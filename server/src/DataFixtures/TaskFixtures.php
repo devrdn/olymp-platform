@@ -15,8 +15,6 @@ class TaskFixtures extends Fixture
         $taskMeta = new TaskMeta();
         $task->setName("A+B");
         $task->setDescription("<p>Given A, B. You need to find A + B.</p>");
-        $task->setExampleInput("10 12");
-        $task->setExampleOutput("22");
         $task->setPublished(true);
         $task->setTimeLimit(1000);
         $task->setMemoryLimit(1024);
