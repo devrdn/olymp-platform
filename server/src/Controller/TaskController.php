@@ -32,7 +32,7 @@ class TaskController extends AbstractController
     public function showAllTasks(int $page, TaskRepository $taskRepository): Response
     {
         $offset = max(0, $page);
-        $paginator = $taskRepository->getTaskPaginator($offset);
+        $paginator = $taskRepository->getPaginator($offset);
 
         return $this->render('task/list.html.twig', [
             'tasks' => $paginator,
