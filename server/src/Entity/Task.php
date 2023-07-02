@@ -28,15 +28,6 @@ class Task
     #[ORM\Column]
     private ?int $memory_limit = null;
 
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
-    private ?string $example_input = null;
-
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
-    private ?string $example_output = null;
-
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $restriction = null;
-
     #[ORM\OneToMany(mappedBy: 'task', targetEntity: TaskTest::class, orphanRemoval: true)]
     private Collection $taskTests;
 
@@ -101,42 +92,6 @@ class Task
     public function setMemoryLimit(int $memory_limit): self
     {
         $this->memory_limit = $memory_limit;
-
-        return $this;
-    }
-
-    public function getExampleInput(): ?string
-    {
-        return $this->example_input;
-    }
-
-    public function setExampleInput(?string $example_input): self
-    {
-        $this->example_input = $example_input;
-
-        return $this;
-    }
-
-    public function getExampleOutput(): ?string
-    {
-        return $this->example_output;
-    }
-
-    public function setExampleOutput(?string $example_output): self
-    {
-        $this->example_output = $example_output;
-
-        return $this;
-    }
-
-    public function getRestriction(): ?string
-    {
-        return $this->restriction;
-    }
-
-    public function setRestriction(?string $restriction): self
-    {
-        $this->restriction = $restriction;
 
         return $this;
     }

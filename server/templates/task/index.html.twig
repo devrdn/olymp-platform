@@ -23,24 +23,17 @@
                     {{ task.memoryLimit }}</article>
             </div>
 
-            <div class="task__field task__example">
-                <h3>Example Input and Output</h3><hr>
-                <h7>Example Input:
-                    {{ task.exampleInput|raw }}Example Output:
-                    {{ task.exampleOutput|raw }}</h7>
-            </div>
-
-            <div class="task__field task__example">
+            <div class="task__field task__author">
                 <h3>Author</h3><hr>
                 <article>{{ task.taskMeta.author }}</article>
             </div>
 
-            <div class="task__field task__example">
+            <div class="task__field task__created_at">
                 <h3>Created</h3><hr>
                 <article>{{ task.taskMeta.createdAt | date("Y-m-d H:i:s") }}</article>
             </div>
 
-            <div class="task__field task__example">
+            <div class="task__field task__tests">
                 <h3>Input and Output files</h3><hr>
                 {% for task in task.taskTests %}
                     Input:

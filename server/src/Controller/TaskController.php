@@ -129,7 +129,8 @@ class TaskController extends AbstractController
 
     #[IsGranted('ROLE_ADMIN')]
     #[Route('/task/addtest/{id<\d+>}', methods: ['POST', 'GET'], name: 'app_task_add_test')]
-    public function addTest(int $id, Request $request, TaskRepository $taskRepository, TestUploader $testUploader): Response
+    public function addTest(int $id, Request $request, 
+        TaskRepository $taskRepository, TestUploader $testUploader): Response
     {
         // find task with this id
         $task = $taskRepository->find($id);
