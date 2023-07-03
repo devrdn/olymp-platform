@@ -6,7 +6,6 @@ use App\Entity\Task;
 use App\Entity\TaskTest;
 use App\Exception\TestUploaderException;
 use App\Repository\TaskTestRepository;
-use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Component\Filesystem\Filesystem;
 use ZipArchive;
