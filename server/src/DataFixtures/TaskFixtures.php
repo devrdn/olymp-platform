@@ -20,7 +20,7 @@ class TaskFixtures extends Fixture
         $task->setMemoryLimit(1024);
 
         $taskMeta->setTask($task);
-        $taskMeta->setAuthor("Test Author");
+        $taskMeta->setAuthor(1);
         $taskMeta->setCreatedAt(new \DateTimeImmutable());
 
         $task->setTaskMeta($taskMeta);

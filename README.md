@@ -39,19 +39,23 @@ DATABASE_URL="mysql://<user>:<password>@<ip>:<port>/<database>?serverVersion=<db
 # DATABASE_URL="sqlite:///%kernel.project_dir%/var/olymp.db.sqlite"
 MESSENGER_TRANSPORT_DSN=doctrine://default
 ```
-2. Create database
+2. Install JS dependencies
+```shell
+npm install
+npm run build
+```
+3. Create database
 ```shell
 php bin/console doctrine:database:create
 ```
-3. Make migration to database
+4. Make migration to database
 ```shell
 php bin/console doctrine:migrations:diff
 php bin/console doctrine:migrations:migrate
 ```
-4. Install JS dependencies
+5. Load initial data
 ```shell
-npm install
-npm run build
+php bin/console doctrine:fixtures:load
 ```
 
 ### Start Server
