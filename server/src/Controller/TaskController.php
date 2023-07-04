@@ -173,7 +173,7 @@ class TaskController extends AbstractController
         try {
             $numberOfUploadedTests = $testUploader->extractTestsIfHasPair($task, $inputPattern, $outputPattern, $this->getParameter('test_directory'));
         } catch (TestUploaderException $exception) {
-            $this->addFlash('success', $exception->getMessage());
+            $this->addFlash('warning', MessageConstants::UNSUCCESSFUL_UPLOAD);
             return $this->redirectToRoute('app_task_add_test', ['id' => $task->getId()]);
         }
 
