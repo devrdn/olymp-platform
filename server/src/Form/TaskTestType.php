@@ -22,9 +22,10 @@ class TaskTestType extends AbstractType
             ->add('input_pattern', TextType::class, [
                 'label' => 'Input Pattern',
                 'attr' => ['class' => 'form-control'],
-                'help' => "e.g. `[id]_input.txt`, where [id] some identifier",
+                'help' => "default value. `[id]_input.txt`",
                 'required' => false,
                 'mapped' => false,
+                'empty_data' => "[id]_input.txt",
                 'constraints' => [
                     new Length([
                         'max' => 40,
@@ -35,7 +36,8 @@ class TaskTestType extends AbstractType
             ->add('output_pattern', TextType::class, [
                 'label' => 'Output pattern',
                 'attr' => ['class' => 'form-control'],
-                'help' => "e.g. `[id]_output.txt`, where [id] test identifier",
+                'help' => "default value. `[id]_output.txt`",
+                'empty_data' => "[id]_output.txt",
                 'required' => false,
                 'mapped' => false,
                 'constraints' => [
