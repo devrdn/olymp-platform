@@ -44,5 +44,16 @@
             </div>
         </div>
         {% include "task/_upload_solution.html.twig" with { form: form } %}
+
+        {% include "task/partials/_user_solution_status.html.twig" %}
+
+        <div id="user-data" data-user="{{ app.user.id }}" data-task="{{ task.Id }}"></div>
+
     </div>
+{% endblock %}
+
+{% block script %}
+    {% if app.user %}
+        {{ encore_entry_script_tags('user_solutions') }}
+    {% endif %}
 {% endblock %}

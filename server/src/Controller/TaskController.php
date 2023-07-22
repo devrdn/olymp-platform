@@ -115,7 +115,7 @@ class TaskController extends AbstractController
             }
         } catch (FileUploaderException $exception) {
             $this->addFlash('error', "There are some errors during uploading the solution");
-            return $this->redirectToRoute('app_task_single_page', ['id' => $id]);
+            return $this->redirectToRoute('app_task_view', ['id' => $id]);
         }
 
         // Save to DataBase
@@ -124,7 +124,7 @@ class TaskController extends AbstractController
 
         $this->addFlash('success', MessageConstants::SUCCESSFULLY_UPLOADED);
 
-        return $this->redirectToRoute('app_task_single_page', ['id' => $id]);
+        return $this->redirectToRoute('app_task_view', ['id' => $id]);
     }
 
     #[IsGranted('ROLE_ADMIN')]
@@ -259,7 +259,7 @@ class TaskController extends AbstractController
             // todo: Maybe Create FlaskGenerator Service 
             $this->addFlash('success', "Task `{$task->getName()}` was successfully updated.");
 
-            return $this->redirectToRoute('app_task_single_page', ['id' => $id]);
+            return $this->redirectToRoute('app_task_view', ['id' => $id]);
         }
  
 
