@@ -1,4 +1,7 @@
 {
+    "craue/config-bundle": {
+        "version": "2.6.0"
+    },
     "dama/doctrine-test-bundle": {
         "version": "7.2",
         "recipe": {

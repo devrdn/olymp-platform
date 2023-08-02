@@ -47,7 +47,7 @@
 
         {% if app.user %}
             {% include "task/partials/_user_solution_status.html.twig" %}
-            <div id="user-data" data-user="{{ app.user.id }}" data-task="{{ task.Id }}"></div>
+            <div id="user-data" data-task="{{ task.Id }}"></div>
         {% endif %}
 
     </div>

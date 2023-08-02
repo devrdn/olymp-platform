@@ -2,8 +2,10 @@
 
 namespace App\Entity;
 
+use App\Config\SolutionStatus;
 use App\Repository\UserSolutionRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: UserSolutionRepository::class)]
 class UserSolution
@@ -11,6 +13,7 @@ class UserSolution
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups("user_solution")]
     private ?int $id = null;
 
     #[ORM\ManyToOne]
@@ -22,15 +25,18 @@ class UserSolution
     private ?Task $task = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups("user_solution")]
     private ?string $filename = null;
 
-    #[ORM\Column]
-    private ?int $status = null;
+    #[ORM\Column(type: "integer", enumType: SolutionStatus::class)]
+    #[Groups("user_solution")]
+    private SolutionStatus $status;
 
     #[ORM\Column]
+    #[Groups("user_solution")]
     private ?\DateTimeImmutable $uploadedAt = null;
     
-    public function __construct(User $user, Task $task, string $filename, int $status = 0)
+    public function __construct(User $user, Task $task, string $filename, SolutionStatus $status = SolutionStatus::QUEUE)
     {
         $this->user = $user;
         $this->task = $task;
@@ -80,12 +86,12 @@ class UserSolution
         return $this;
     }
 
-    public function getStatus(): ?int
+    public function getStatus(): string
     {
-        return $this->status;
+        return $this->status->name;
     }
 
-    public function setStatus(int $status): self
+    public function setStatus(SolutionStatus $status): self
     {
         $this->status = $status;
 
