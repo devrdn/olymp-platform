@@ -3,11 +3,9 @@
 namespace App\Entity;
 
 use App\Repository\TaskMetaRepository;
-use DateTime;
 use DateTimeImmutable;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: TaskMetaRepository::class)]
 class TaskMeta
@@ -15,7 +13,6 @@ class TaskMeta
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups("task_meta")]
     private ?int $id = null;
 
     #[ORM\OneToOne(inversedBy: 'taskMeta', cascade: ['persist', 'remove'])]
