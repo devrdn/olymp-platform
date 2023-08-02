@@ -18,6 +18,7 @@ use App\Repository\TaskMetaRepository;
 use App\Repository\UserSolutionRepository;
 use App\Services\TestUploader;
 use App\Services\SolutionUploader;
+use Craue\ConfigBundle\Util\Config;
 use DateTimeImmutable;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -29,7 +30,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class TaskController extends AbstractController
 {
     #[Route('/task/{page<\d+>}', methods: ['GET'], name: 'app_task_list', defaults: ['page' => 0])]
-    public function list(int $page, TaskRepository $taskRepository): Response
+    public function list(int $page, TaskRepository $taskRepository, Config $config): Response
     {
         $offset = max(0, $page);
         $paginator = $taskRepository->getPaginator($offset);
