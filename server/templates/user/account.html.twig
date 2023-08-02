@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello {{ user.name }}!{% endblock %}
+
+{% block body %}
+
+    <div class="wrapper">
+        <div class="">
+            <label>Name: </label>
+            <p>{{ user.username }}</p>
+        </div>
+
+        <div class="">
+            <label>Email: </label>
+            <p>{{ user.email }}</p>
+        </div>
+
+    </div>
+
+{% endblock %}
