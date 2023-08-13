@@ -1,3 +1,8 @@
 controllers:
     resource: ../src/Controller/
     type: attribute
+
+craue_config_settings_modify:
+    path: /admin/settings/modify
+    defaults:
+        _controller: Craue\ConfigBundle\Controller\SettingsController::modifyAction

@@ -9,12 +9,21 @@ parameters:
     'user_directory': '%kernel.project_dir%/../data/user'
     test_directory: '%kernel.project_dir%/../data/tasks'
     test_path: '../../tasks'
+    craue_config.cache_adapter.class: Craue\ConfigBundle\CacheAdapter\SymfonyCacheComponentAdapter
 
 services:
     # default configuration for services in *this* file
     _defaults:
         autowire: true      # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+
+    craue_config_cache_provider:
+        class: Symfony\Component\Cache\Adapter\FilesystemAdapter
+        public: false
+        arguments:
+            - 'craue_config'
+            - 0
+            - '%kernel.cache_dir%'
 
     # makes classes in src/ available to be used as services
     # this creates a service per class whose id is the fully-qualified class name
