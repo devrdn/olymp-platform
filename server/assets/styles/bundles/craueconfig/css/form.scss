@@ -3,5 +3,10 @@
 }
 
 .craue_config_settings_modify input[type=text] {
-	width: 300px;
+	width: 500px;
+}
+
+.craue_config_settings_modify fieldset {
+	border-color: #F00;
+	border-style: solid;
 }

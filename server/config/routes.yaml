@@ -5,4 +5,4 @@ controllers:
 craue_config_settings_modify:
     path: /admin/settings/modify
     defaults:
-        _controller: Craue\ConfigBundle\Controller\SettingsController::modifyAction
+        _controller: App\Controller\Admin\SettingsController::modifySettingAction
