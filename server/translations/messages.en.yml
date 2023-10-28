@@ -1,8 +1,0 @@
-form:
-  constraints:
-    one_field: "You need to fill only one field"
-
-services:
-  errors:
-    test_upload: "Errors occurred during test upload"
-    solution_upload: "Errors occurred during solution upload"
