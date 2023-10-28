@@ -20,7 +20,6 @@ class FileUploader
      */
     private string $targetDirectory;
 
-
     public function __construct(private readonly Filesystem $fileSystem)
     {
     }

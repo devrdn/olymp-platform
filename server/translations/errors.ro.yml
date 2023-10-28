@@ -1,0 +1,8 @@
+form:
+  constraints:
+    one_field: "Trebuie să completați doar un singur câmp"
+
+services:
+  errors:
+    test_upload: "Au apărut erori în timpul încărcării testului"
+    solution_upload: "Au apărut erori în timpul încărcării soluției"

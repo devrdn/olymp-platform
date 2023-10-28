@@ -25,6 +25,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Translation\LocaleSwitcher;
 
 class TaskController extends AbstractController
 {
@@ -49,7 +50,6 @@ class TaskController extends AbstractController
     public function view(int $id, TaskRepository $taskRepository): Response
     {
         $task = $taskRepository->find($id);
-
         if (!$task) {
             throw $this->createNotFoundException(
                 'Task with ID: ' . $id . ' not found'

@@ -7,14 +7,12 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\Form\Exception\TransformationFailedException;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 
 class OnlyOneFieldFilledSubscriber implements EventSubscriberInterface
 {
-
    /**
     * Fields that must be checked
     *

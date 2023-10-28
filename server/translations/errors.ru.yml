@@ -1,0 +1,8 @@
+form:
+  constraints:
+    one_field: "Вы должны заполнить только одно поле"
+
+services:
+  errors:
+    test_upload: "Возникли ошибки при загрузки тестов"
+    solution_upload: "Возникли ошибки при загрузке решения"
