@@ -44,4 +44,9 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function task_meta()
+    {
+        return $this->hasMany(TaskMeta::class);
+    }
 }
