@@ -19,16 +19,13 @@ class PermissionChecker implements PermissionCheckerInterface
     /**
      * Check if the user has the specified permission.
      *
-     * This method first checks if the user has the given permission directly.
-     * If not, and a contest ID is provided, it checks if the user has any roles
-     * associated with the given contest that grant the specified permission.
-     *
+     * @param User|null $user The user to check the permission for.
      * @param string $permission The permission to check.
-     * @param int|null $contestId The ID of the contest to check roles for, or null if not applicable.
+     * @param int|null $contestId The contest ID to check the permission within (optional).
      * 
-     * @return bool True if the user has the permission, false otherwise.
+     * @return bool True if the user has the specified permission, false otherwise.
      */
-    public function hasPermission(?User $user, string $permission, ?int $contestId = null): bool
+    public function hasPermission(?User $user, string $permission, ?int $contestId): bool
     {
         if (!$user) {
             return false;

@@ -15,5 +15,5 @@ interface PermissionCheckerInterface
      * 
      * @return bool
      */
-    public function hasPermission(User $user, string $permission, ?int $contestId = null): bool;
+    public function hasPermission(User $user, string $permission, ?int $contestId): bool;
 }
