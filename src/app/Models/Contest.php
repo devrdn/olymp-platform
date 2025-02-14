@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Contest extends Model
 {
-    protected array $fillable = [
+    protected $fillable = [
         'title',
         'description',
         'start_time',

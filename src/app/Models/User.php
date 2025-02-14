@@ -3,13 +3,16 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use App\Contracts\PermissionCheckerInterface;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasRoles;
 
     /**
      * The attributes that are mass assignable.
@@ -45,8 +48,11 @@ class User extends Authenticatable
         ];
     }
 
-    public function task_meta()
+    public function can($ability, $arguments = [])
     {
-        return $this->hasMany(TaskMeta::class);
+        $contestId = $arguments['contestId'] ?? null;
+
+        return app(PermissionCheckerInterface::class)
+            ->hasPermission($this, $ability, $contestId);
     }
 }
