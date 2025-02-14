@@ -26,7 +26,14 @@ class DatabaseSeeder extends Seeder
         ]);
 
         Contest::create([
-            'title' => 'Test Contest',
+            'title' => 'Task Archive',
+            'description' => 'This is an archive of all tasks',
+            'start_time' => now(),
+            'end_time' => now()->addDays(1),
+        ]);
+
+        Contest::create([
+            'title' => 'Test2 Contest',
             'description' => 'This is a test contest',
             'start_time' => now(),
             'end_time' => now()->addDays(1),

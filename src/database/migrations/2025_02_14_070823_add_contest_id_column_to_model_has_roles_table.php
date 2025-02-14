@@ -17,6 +17,8 @@ return new class extends Migration
                 ->constrained()
                 ->cascadeOnDelete()
                 ->after('role_id');
+
+            $table->primary(['role_id', 'model_id', 'model_type', 'contest_id'], 'model_has_roles_unique');
         });
     }
 
