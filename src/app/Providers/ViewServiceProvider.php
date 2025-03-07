@@ -48,5 +48,6 @@ class ViewServiceProvider extends ServiceProvider
     private function registerNamespaces()
     {
         View::addNamespace('pages', resource_path('views/pages'));
+        View::addNamespace('layouts', resource_path('views/layouts'));
     }
 }

@@ -1,2 +1,11 @@
+/* Fonts */
+@import "./fonts.css";
+
+/* Import Tailwind CSS */
 @import "tailwindcss";
+
+/* Import TailwindCSS Custom Theme */
+@import "./theme.css";
+
+/* Specify the path to the views directory */
 @source "../views";

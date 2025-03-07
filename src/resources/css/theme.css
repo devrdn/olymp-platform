@@ -1,0 +1,31 @@
+@theme {
+    /* Colors */
+    --color-dark: var(--color-gray-950);
+    --color-light: var(--color-white);
+    --color-primary: rgb(33, 94, 232);
+    --color-primary-dark: rgba(33, 94, 232, 0.9);
+
+    /* Fonts */
+    /* --font-mono: 'JetBrains Mono', monospace; */
+    --font-mono: "IBM Plex Mono", monospace;
+}
+
+@layer utilities {
+    .bg-base {
+        background-color: var(--color-dark);
+    }
+
+    .text-body {
+        color: var(--color-light);
+    }
+
+    .equal-children > * {
+        flex: 1 1 0%;
+    }
+}
+
+@layer components {
+    input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+        filter: brightness(0) invert(1); /* Изменяет цвет иконки на белый */
+    }
+}
