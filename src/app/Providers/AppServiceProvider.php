@@ -22,9 +22,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Blade::if('can', function (string $permission, $contestId = null): bool {
-            return app(PermissionCheckerInterface::class)
-                ->hasPermission(auth()->user(), $permission, $contestId);
-        });
+        
     }
 }

@@ -45,6 +45,6 @@ class RegisteredUserController extends Controller
      */
     public function create(): View
     {
-        return view('auth.register');
+        return view('pages::auth.register');
     }
 }
