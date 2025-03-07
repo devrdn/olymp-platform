@@ -5,7 +5,7 @@
 @section('subtitle', 'Contest')
 
 @section('description')
-    {{ __('Form to create a new contest.') }}
+    {{ __('Create a new contest by filling out the form below.') }}
 @endsection
 
 @section('content')
