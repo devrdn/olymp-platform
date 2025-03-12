@@ -2,10 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CreateContestRequest;
+use App\Services\ContestService;
 use Illuminate\Http\Request;
 
 class ContestController extends Controller
 {
+    public function __construct(
+        private ContestService $contestService
+    ) {}
+
     /**
      * Display a listing of the resource.
      */
@@ -25,9 +31,11 @@ class ContestController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(CreateContestRequest $request)
     {
-        //
+        $this->contestService->create($request->getDTO());
+        
+        return redirect()->route('contest.index');
     }
 
     /**

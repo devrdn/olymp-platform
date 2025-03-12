@@ -9,15 +9,16 @@
 @endsection
 
 @section('content')
-    <x-forms.wrapper>
+    <x-forms.wrapper action="{{ route('contest.store') }}" method="post">
+        @csrf
         <x-forms.fieldset legend="Details">
-            <x-forms.input-widget for="title" :title="__('Title')" required />
-            <x-forms.textarea-widget rows="6" style="resize: none;" for="description" :title="__('Description')" required />
+            <x-forms.input-widget name="title" :title="__('Title')" required />
+            <x-forms.textarea-widget name="description" rows="6" style="resize: none;" :title="__('Description')" />
         </x-forms.fieldset>
         <x-forms.fieldset legend="Dates">
             <x-forms.block>
-                <x-forms.input-widget type="datetime-local" for="start_date" :title="__('Start Date')" required />
-                <x-forms.input-widget type="datetime-local" for="end_date" :title="__('End Date')" required />
+                <x-forms.input-widget type="datetime-local" name="start_time" :title="__('Start Date')" required />
+                <x-forms.input-widget type="datetime-local" name="end_time" :title="__('End Date')" required />
             </x-forms.block>
         </x-forms.fieldset>
         <div>

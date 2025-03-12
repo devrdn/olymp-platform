@@ -2,8 +2,11 @@
     'disabled' => false,
     'title' => '',
     'required' => false,
-    'name' => '',
 ])
+
+@php
+    $name = $attributes->get('name');
+@endphp
 
 <div>
     @if ($title)
@@ -16,5 +19,12 @@
         {{ $attributes->merge([
             'disabled' => $disabled,
             'type' => 'text',
+            'required' => $required,
+            'name' => $name,
+            'id' => $name,
         ]) }} />
+
+    @error($name)
+        <x-forms.error :message="$message" />
+    @enderror
 </div>
