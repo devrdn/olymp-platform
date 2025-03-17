@@ -112,4 +112,14 @@ return [
 
     'password_timeout' => env('AUTH_PASSWORD_TIMEOUT', 10800),
 
+    /*
+    |--------------------------------------------------------------------------
+    | Password Confirmation Redirects
+    |--------------------------------------------------------------------------
+    |
+    | Here you may specify the route to which the user should be redirected after
+    | confirming their password.
+    |
+    */
+    'redirect_route' => 'home',
 ];
