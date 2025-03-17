@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateContestRequest;
+use App\Http\Requests\UpdateContestRequest;
 use App\Services\ContestService;
 use Illuminate\Http\Request;
 
@@ -34,7 +35,7 @@ class ContestController extends Controller
     public function store(CreateContestRequest $request)
     {
         $this->contestService->create($request->getDTO());
-        
+
         return redirect()->route('contest.index');
     }
 
@@ -49,17 +50,21 @@ class ContestController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(int $id)
     {
-        //
+        $contest = $this->contestService->fetchById($id);
+
+        return view('pages::contest.edit', compact('contest'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UpdateContestRequest $request, string $id)
     {
-        //
+        $this->contestService->update($id, $request->getDTO());
+
+        return redirect()->route('contest.edit', $id);
     }
 
     /**

@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
-Route::resource('contest', ContestController::class);
+Route::resource('contest', ContestController::class)
+    ->whereNumber('contest');
 
 require __DIR__ . '/auth.php';

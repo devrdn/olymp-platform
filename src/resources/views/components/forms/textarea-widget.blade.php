@@ -8,7 +8,6 @@
     $name = $attributes->get('name');
 @endphp
 
-
 <div>
     @if ($title)
         <x-forms.input-label :for="$name" :required="$required" class="mb-4">
@@ -22,7 +21,9 @@
             'type' => 'text',
             'required' => $required,
             'id' => $name,
-        ]) }} />
+        ]) }}>
+        {{ $slot ?? '' }}
+    </x-forms.textarea>
 
     @error($name)
         <x-forms.error :message="$message" />

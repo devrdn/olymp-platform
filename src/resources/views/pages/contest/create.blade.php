@@ -12,13 +12,16 @@
     <x-forms.wrapper action="{{ route('contest.store') }}" method="post">
         @csrf
         <x-forms.fieldset legend="Details">
-            <x-forms.input-widget name="title" :title="__('Title')" required />
-            <x-forms.textarea-widget name="description" rows="6" style="resize: none;" :title="__('Description')" />
+            <x-forms.input-widget name="title" :title="__('Title')" value="{{ old('name') }}" required />
+            <x-forms.textarea-widget name="description" rows="6" style="resize: none;"
+                :title="__('Description')">{{ old('description') }}</x-forms.textarea-widget>
         </x-forms.fieldset>
         <x-forms.fieldset legend="Dates">
             <x-forms.block>
-                <x-forms.input-widget type="datetime-local" name="start_time" :title="__('Start Date')" required />
-                <x-forms.input-widget type="datetime-local" name="end_time" :title="__('End Date')" required />
+                <x-forms.input-widget type="datetime-local" name="start_time" :title="__('Start Date')"
+                    value="{{ old('start_time') }}" required />
+                <x-forms.input-widget type="datetime-local" name="end_time" :title="__('End Date')" value="{{ old('end_time') }}"
+                    required />
             </x-forms.block>
         </x-forms.fieldset>
         <div>
