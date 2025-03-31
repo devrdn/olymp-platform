@@ -24,10 +24,7 @@
         <!-- Page Content -->
         <main class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
             <div>
-                <p
-                    class="flex items-center gap-2 font-mono text-sm font-medium tracking-widest text-gray-400 uppercase">
-                    @yield('subtitle', '')
-                </p>
+                {{ Breadcrumbs::render() }}
                 <h1 class="tracking-tighter text-balance text-2xl lg:text-5xl font-medium py-4">@yield('title')</h1>
                 <p class="text-gray-400 text-base">
                     @yield('description', '')

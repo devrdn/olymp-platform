@@ -24,11 +24,8 @@
 
         <main class="p-4 sm:ml-64 bg-base">
             <div class="p-4  rounded-lg">
+                {{ Breadcrumbs::render() }}
                 <div>
-                    <p
-                        class="flex items-center gap-2 font-mono text-sm font-medium tracking-widest text-gray-400 uppercase">
-                        @yield('subtitle', '')
-                    </p>
                     <h1 class="tracking-tighter text-balance text-2xl lg:text-5xl font-medium py-4">
                         @yield('title')
                     </h1>
