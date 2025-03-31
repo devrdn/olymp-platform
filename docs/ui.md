@@ -141,11 +141,6 @@ If user is authenticated:
 2. [Authentication/Personal](#authenticationpersonal)
 3. [Contest View Block](#contest-view-block)
 
-If user is enrolled in the contest:
-
-1.
-1. [Task View Block](#task-view-block)
-
 ### Task Archive Page
 
 Task Archive is a special contest that contains all tasks from contest with `id 0`. It is used to show all tasks in a single place. It is not shown in the contest list.
