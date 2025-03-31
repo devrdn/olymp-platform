@@ -123,6 +123,12 @@ If user is authenticated:
 
 ### Home Page
 
+1. [Menu](#menu)
+2. [Authentication/Personal](#authenticationpersonal)
+3. Site Name (From settings)
+4. Site Description (From settings)
+5. Available future contests (latest 3)
+
 ### Contests List Page
 
 1. [Menu](#menu)
