@@ -28,3 +28,9 @@ Breadcrumbs::for('contest.edit', function (BreadcrumbTrail $trail, string $id) {
    $trail->parent('contest.show', $id);
    $trail->push(__("Edit"), route('contest.edit', $id));
 });
+
+Breadcrumbs::for('contest.task.show', function (BreadcrumbTrail $trail, string $contestId, string $taskId) {
+   $trail->parent('contest.show', $contestId);
+   $trail->push(__('Task'));
+   $trail->push($taskId, route('contest.task.show', [$contestId, $taskId]));
+});

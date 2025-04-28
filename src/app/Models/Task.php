@@ -20,4 +20,9 @@ class Task extends Model
     {
         return $this->hasOne(TaskMeta::class);
     }
+
+    public function contests()
+    {
+        return $this->belongsToMany(Contest::class);
+    }
 }

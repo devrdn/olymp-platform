@@ -12,4 +12,9 @@ class Contest extends Model
         'start_time',
         'end_time'
     ];
+
+    public function tasks()
+    {
+        return $this->belongsToMany(Task::class, 'contest_task');
+    }
 }

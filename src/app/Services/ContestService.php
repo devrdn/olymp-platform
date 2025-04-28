@@ -13,6 +13,10 @@ final class ContestService
         return Contest::findOrFail($id);
     }
 
+    public function fetchByIdWith(int $contestId, string $relation, array $columns = ["*"]) {
+        return Contest::with($relation)->findOrFail($contestId, $columns);
+    }
+
     public function update(int $id, UpdateContestDTO $dto)
     {
         return $this->fetchById($id)->update([
