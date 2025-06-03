@@ -18,6 +18,8 @@
     @yield('scripts')
 </head>
 <body class="font-sans antialiased bg-base text-body">
+    <x-alerts.flash />
+    
     <x-header />
 
     @yield('content')

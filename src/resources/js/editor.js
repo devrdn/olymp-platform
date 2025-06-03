@@ -55,6 +55,7 @@ document.addEventListener("DOMContentLoaded", () => {
         editorElement.classList.add("fullscreen-editor");
         document.body.classList.add("fullscreen-active");
         fullscreenEnter.classList.add("hidden");
+        fullscreenBtn.classList.add("hidden");
         fullscreenExit.classList.remove("hidden");
         editor.layout();
     };
@@ -63,6 +64,7 @@ document.addEventListener("DOMContentLoaded", () => {
         editorElement.classList.remove("fullscreen-editor");
         editorElement.classList.add("h-[20vh]");
         document.body.classList.remove("fullscreen-active");
+        fullscreenBtn.classList.remove("hidden");
         fullscreenEnter.classList.remove("hidden");
         fullscreenExit.classList.add("hidden");
     }
@@ -84,5 +86,9 @@ document.addEventListener("DOMContentLoaded", () => {
         ) {
             exitFullscreen();
         }
+    });
+
+    document.querySelector('form').addEventListener('submit', function () {
+        document.getElementById('code-input').value = editor.getValue();
     });
 });

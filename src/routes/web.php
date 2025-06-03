@@ -12,7 +12,12 @@ Route::resource('contest', ContestController::class)
 
 Route::resource('contest.task', ContestTaskController::class)
     ->whereNumber('contest')
-    ->only(['index', 'show' , 'store', 'destroy'])
+    ->only(['index', 'show', 'store', 'destroy'])
     ->scoped();
+
+Route::post('/contest/{contest}/task/{task}/submit', [ContestTaskController::class, 'submit'])
+    ->name('contest.task.submit')
+    ->whereNumber('contest')
+    ->whereNumber('task');
 
 require __DIR__ . '/auth.php';

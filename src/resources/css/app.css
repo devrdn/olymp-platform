@@ -12,19 +12,43 @@
 
 /* Global Styles */
 .fullscreen-editor {
-    position: fixed !important;
-    top: 0;
-    left: 0;
-    width: 100vw !important;
-    height: 100vh !important;
-    z-index: 9999;
-    background: #1e1e1e;
+  position: fixed !important;
+  top: 0;
+  left: 0;
+  width: 100vw !important;
+  height: 100vh !important;
+  z-index: 9999;
+  background: #1e1e1e;
 }
 
-.fullscreen-editor .fullscreen-icon {
-    position: fixed !important;
-    top: 16px;
-    right: 30px;
-    z-index: 10001;
-    cursor: pointer;
+.fullscreen-icon {
+  position: absolute;
+  top: 5px;
+  right: 20px; /* Сдвигаем кнопку чуть левее */
+  z-index: 10000;
+  cursor: pointer;
+  background: rgba(56, 56, 56, 0.95);
+  padding: 8px;
+  border-radius: 4px;
+  transition: background 0.3s;
+}
+
+.fullscreen-icon:hover {
+  background: rgb(89, 89, 89);
+}
+
+.fullscreen-exit-icon {
+  position: fixed;
+  top: 5px;
+  right: 20px;
+  z-index: 10001;
+  cursor: pointer;
+  background: rgba(56, 56, 56, 0.95);
+  padding: 8px;
+  border-radius: 4px;
+  transition: background 0.3s;
+}
+
+.fullscreen-exit-icon:hover {
+  background: rgb(89, 89, 89);
 }

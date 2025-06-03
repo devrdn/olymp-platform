@@ -18,6 +18,9 @@
 
 <body class="font-sans antialiased">
     <div class="min-h-screen bg-base text-body">
+        <!-- Flash Messages -->
+        <x-alerts.flash />
+
         <!-- Page Heading -->
         <x-header />
 
