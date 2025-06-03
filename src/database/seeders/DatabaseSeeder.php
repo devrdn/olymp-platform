@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Contest;
+use App\Models\Task;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -38,5 +39,14 @@ class DatabaseSeeder extends Seeder
             'start_time' => now(),
             'end_time' => now()->addDays(1),
         ]);
+
+        $task = Task::create([
+            'title' => 'A + B Task',
+            'description' => 'This task requires you to calculate the sum of two integers A and B.',
+            'time_limit' => 1000,
+            'memory_limit' => 256,
+        ]);
+
+        Contest::first()->tasks()->attach($task);
     }
 }

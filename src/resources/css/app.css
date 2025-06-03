@@ -18,26 +18,13 @@
     width: 100vw !important;
     height: 100vh !important;
     z-index: 9999;
+    background: #1e1e1e;
 }
 
-.fullscreen-icon {
-    position: absolute;
-    top: 2px;
-    right: 16px;
-    z-index: 10000;
-    cursor: pointer;
-}
-
-#fullscreen-exit {
-    top: 16px;
-    right: 16px;
-    z-index: 10000;
-}
-
-.fullscreen-editor ~ .fullscreen-icon,
 .fullscreen-editor .fullscreen-icon {
-    position: fixed;
-    top: 2px;
-    right: 2px;
+    position: fixed !important;
+    top: 16px;
+    right: 30px;
     z-index: 10001;
+    cursor: pointer;
 }

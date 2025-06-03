@@ -58,13 +58,14 @@ document.addEventListener("DOMContentLoaded", () => {
         fullscreenExit.classList.remove("hidden");
         editor.layout();
     };
-    const exitFullscreen = () => {
+
+    function exitFullscreen() {
         editorElement.classList.remove("fullscreen-editor");
+        editorElement.classList.add("h-[20vh]");
         document.body.classList.remove("fullscreen-active");
         fullscreenEnter.classList.remove("hidden");
         fullscreenExit.classList.add("hidden");
-        editor.layout();
-    };
+    }
 
     fullscreenBtn.addEventListener("click", () => {
         if (!editorElement.classList.contains("fullscreen-editor")) {
