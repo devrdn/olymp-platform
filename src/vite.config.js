@@ -11,6 +11,6 @@ export default defineConfig({
             refresh: true,
         }),
         // @ts-ignore
-        monacoEditorPlugin.default(),
+        monacoEditorPlugin.default({}),
     ],
 });

@@ -9,3 +9,35 @@
 
 /* Specify the path to the views directory */
 @source "../views";
+
+/* Global Styles */
+.fullscreen-editor {
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    width: 100vw !important;
+    height: 100vh !important;
+    z-index: 9999;
+}
+
+.fullscreen-icon {
+    position: absolute;
+    top: 2px;
+    right: 16px;
+    z-index: 10000;
+    cursor: pointer;
+}
+
+#fullscreen-exit {
+    top: 16px;
+    right: 16px;
+    z-index: 10000;
+}
+
+.fullscreen-editor ~ .fullscreen-icon,
+.fullscreen-editor .fullscreen-icon {
+    position: fixed;
+    top: 2px;
+    right: 2px;
+    z-index: 10001;
+}

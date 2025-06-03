@@ -54,6 +54,23 @@
         <form id="solution-form" class="flex flex-col w-1/2 h-[70vh] p-6">
             <h2 class="text-3xl font-semibold mb-4">{{ __('Solution') }}</h2>
             <x-forms.select id="language" class="mb-3" :options="$languages" required />
+            <div class="relative w-full">
+                <button id="fullscreen-btn" type="button"
+                    class="fullscreen-icon group absolute top-2 right-2 z-10 bg-gray-900 hover:bg-gray-800 p-2 rounded transition"
+                    aria-label="Полноэкранный режим">
+                    <!-- SVG ВХОД (развернуть) -->
+                    <svg id="fullscreen-enter" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 block" fill="none"
+                        viewBox="0 0 24 24" stroke="white" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M8 3H5a2 2 0 0 0-2 2v3m0 8v3a2 2 0 0 0 2 2h3m8-18h3a2 2 0 0 1 2 2v3m0 8v3a2 2 0 0 1-2 2h-3" />
+                    </svg>
+                    <!-- SVG ВЫХОД (крестик) -->
+                    <svg id="fullscreen-exit" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 hidden" fill="none"
+                        viewBox="0 0 24 24" stroke="white" stroke-width="2" style="z-index: 10001;">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
             <div id="editor" class="flex-1 border border-gray-900 rounded-md"></div>
             <p class="text-base mt-3">or upload file</p>
             <label for="fileInput" class="block my-3 cursor-pointer">

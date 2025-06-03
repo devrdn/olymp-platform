@@ -19,6 +19,9 @@ function createModel(value, language) {
 document.addEventListener("DOMContentLoaded", () => {
     const editorElement = document.getElementById("editor");
     const languageSelector = document.getElementById("language");
+    const fullscreenBtn = document.getElementById("fullscreen-btn");
+    const fullscreenEnter = document.getElementById("fullscreen-enter");
+    const fullscreenExit = document.getElementById("fullscreen-exit");
 
     model = createModel(
         "// Write your solution here ...\n",
@@ -46,5 +49,39 @@ document.addEventListener("DOMContentLoaded", () => {
         // Create a new model with the new language
         model = createModel(oldValue, newLanguage);
         editor.setModel(model);
+    });
+
+    const enterFullscreen = () => {
+        editorElement.classList.add("fullscreen-editor");
+        document.body.classList.add("fullscreen-active");
+        fullscreenEnter.classList.add("hidden");
+        fullscreenExit.classList.remove("hidden");
+        editor.layout();
+    };
+    const exitFullscreen = () => {
+        editorElement.classList.remove("fullscreen-editor");
+        document.body.classList.remove("fullscreen-active");
+        fullscreenEnter.classList.remove("hidden");
+        fullscreenExit.classList.add("hidden");
+        editor.layout();
+    };
+
+    fullscreenBtn.addEventListener("click", () => {
+        if (!editorElement.classList.contains("fullscreen-editor")) {
+            enterFullscreen();
+        } else {
+            exitFullscreen();
+        }
+    });
+    fullscreenExit.addEventListener("click", exitFullscreen);
+
+    // Escape key exits fullscreen ONLY if сейчас fullscreen
+    document.addEventListener("keydown", (e) => {
+        if (
+            e.key === "Escape" &&
+            editorElement.classList.contains("fullscreen-editor")
+        ) {
+            exitFullscreen();
+        }
     });
 });
